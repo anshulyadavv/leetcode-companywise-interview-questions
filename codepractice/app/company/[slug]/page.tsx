@@ -1,6 +1,7 @@
-import { Building2, ArrowLeft, Layers } from "lucide-react";
+import { LayoutGrid, ArrowLeft, Layers } from "lucide-react";
 import Link from "next/link";
 import Dashboard from "@/components/Dashboard";
+import { CompanyLogo } from "@/components/CompanyLogo";
 import fs from "fs";
 import path from "path";
 
@@ -24,7 +25,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ slug: 
     <div className="min-h-[60vh] flex items-center justify-center p-6">
       <div className="premium-card p-12 text-center space-y-6 max-w-md w-full">
         <div className="p-4 bg-rose-50 rounded-2xl w-fit mx-auto">
-          <Building2 className="h-8 w-8 text-rose-500" />
+          <LayoutGrid className="h-8 w-8 text-rose-500" />
         </div>
         <div className="space-y-2">
           <h2 className="text-2xl font-bold tracking-tight">Company Not Found</h2>
@@ -63,7 +64,14 @@ export default async function CompanyPage({ params }: { params: Promise<{ slug: 
           
           <div className="flex items-center gap-4 text-xs font-semibold text-muted-foreground bg-white/70 dark:bg-black/50 backdrop-blur-md px-5 py-2.5 rounded-full border border-border/50 shrink-0 self-start md:self-auto">
             <div className="flex items-center gap-2">
-              <Building2 className="h-3.5 w-3.5 text-primary" />
+              <div className="h-4 w-4 rounded-sm bg-white dark:bg-secondary flex items-center justify-center overflow-hidden">
+                <CompanyLogo 
+                  slug={company.slug} 
+                  name={company.displayName} 
+                  className="h-3.5 w-3.5"
+                  fallbackClassName="h-3 w-3 text-primary" 
+                />
+              </div>
               <span className="font-mono font-bold uppercase tracking-wider text-primary/70">{company.slug}</span>
             </div>
             <span className="h-4 w-px bg-border" />

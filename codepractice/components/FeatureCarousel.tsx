@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, LayoutTemplate, Compass, Building2, Calendar } from "lucide-react";
+import { ChevronLeft, ChevronRight, Columns, Globe, LayoutGrid, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const features = [
@@ -10,7 +10,7 @@ const features = [
     id: "explore",
     title: "Global Explore Dashboard",
     description: "Browse 3,300+ logic modules, sort by difficulty, frequency, and filter by companies. Track your completion with beautiful progress indicators.",
-    icon: Compass,
+    icon: Globe,
     color: "text-blue-500",
     bg: "bg-blue-500/10",
     ui: (
@@ -47,7 +47,7 @@ const features = [
     id: "companies",
     title: "Company Analytics Registry",
     description: "See exactly what firms like Google, Meta, and Amazon are asking right now. Sorted by live query volume.",
-    icon: Building2,
+    icon: LayoutGrid,
     color: "text-emerald-500",
     bg: "bg-emerald-500/10",
     ui: (

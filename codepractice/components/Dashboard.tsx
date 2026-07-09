@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useDeferredValue } from "react";
 import { useDataStore, Question } from "@/lib/data-store";
-import { Search, Plus, ExternalLink, ChevronDown, Check, Zap, AlertCircle, Hash, ArrowUpDown, CheckCircle2, Trophy, Target, Activity, CalendarDays, CalendarRange } from "lucide-react";
+import { Search, Plus, ExternalLink, ChevronDown, Check, Zap, AlertTriangle, Boxes, ChevronsUpDown, CheckCircle2, Star, Target, Activity, Calendar } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -140,7 +140,7 @@ export default function Dashboard({ initialCompany }: { initialCompany?: string 
           label="Overall Progress" 
           done={stats.done} 
           total={stats.total} 
-          icon={<Trophy className="h-4 w-4 text-indigo-500" />}
+          icon={<Star className="h-4 w-4 text-indigo-500" />}
           color="indigo"
         />
         <StatCard 
@@ -259,7 +259,7 @@ export default function Dashboard({ initialCompany }: { initialCompany?: string 
 
         {paginatedQuestions.length === 0 && (
           <div className="py-20 text-center space-y-3 bg-white dark:bg-black rounded-2xl border border-border border-dashed">
-            <AlertCircle className="h-10 w-10 mx-auto text-muted-foreground/20" />
+            <AlertTriangle className="h-10 w-10 mx-auto text-muted-foreground/20" />
             <div className="space-y-1">
               <p className="font-semibold text-base">No problems found</p>
               <p className="text-sm text-muted-foreground">Try adjusting your filters or search query.</p>
@@ -329,7 +329,7 @@ function SortTab({ active, order, onClick, label }: {
       )}
     >
       {label}
-      <ArrowUpDown className={cn("h-3 w-3", active ? "opacity-100" : "opacity-25")} />
+      <ChevronsUpDown className={cn("h-3 w-3", active ? "opacity-100" : "opacity-25")} />
     </button>
   );
 }
@@ -461,8 +461,8 @@ function QuestionRow({ question, index, onAddToTodo, todoLists, isCompleted, onT
                         onClick={() => { onAddToTodo(list.id); setShowAddMenu(false); }}
                         className="w-full text-left px-3 py-2 text-xs font-semibold text-foreground hover:bg-primary/10 hover:text-primary transition-all flex items-center gap-2 rounded-lg"
                       >
-                        {isDaily  ? <CalendarDays  className="h-3.5 w-3.5 text-blue-500 shrink-0" /> :
-                         isWeekly ? <CalendarRange className="h-3.5 w-3.5 text-violet-500 shrink-0" /> :
+                        {isDaily  ? <Calendar  className="h-3.5 w-3.5 text-blue-500 shrink-0" /> :
+                         isWeekly ? <Calendar className="h-3.5 w-3.5 text-violet-500 shrink-0" /> :
                                     <CheckCircle2  className="h-3.5 w-3.5 opacity-40 shrink-0" />}
                         <span className="flex-1">{list.name}</span>
                         {(isDaily || isWeekly) && (
@@ -521,7 +521,7 @@ function SearchableTopicPicker({ topics, selected, onSelect }: {
         className="w-full h-10 flex items-center justify-between px-3.5 text-sm font-medium bg-white/70 dark:bg-black/50 border border-border/50 rounded-xl hover:bg-white dark:hover:bg-secondary transition-all active:scale-[0.98]"
       >
         <div className="flex items-center gap-2">
-          <Hash className="h-3.5 w-3.5 text-primary/60 shrink-0" />
+          <Boxes className="h-3.5 w-3.5 text-primary/60 shrink-0" />
           <span className="text-sm font-medium">
             {selected.length > 0 ? `Topics (${selected.length})` : "Topics"}
           </span>

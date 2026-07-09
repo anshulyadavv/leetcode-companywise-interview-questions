@@ -2,12 +2,9 @@
 
 import { useState, useEffect, useMemo, useDeferredValue } from "react";
 import { useDataStore } from "@/lib/data-store";
-import { 
-  Building2, Search, ArrowRight, TrendingUp,
-  Command, Sparkles, ChevronDown, Check,
-  Zap, ArrowUpDown, Globe, ChevronLeft, ChevronRight
-} from "lucide-react";
+import { LayoutGrid, Search, ArrowRight, Boxes, Wand2, ChevronDown, Check, Zap, ChevronsUpDown, Globe, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { CompanyLogo } from "@/components/CompanyLogo";
 import { cn } from "@/lib/utils";
 
 
@@ -86,18 +83,18 @@ export default function CompaniesPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-primary/10 rounded-xl text-primary ring-1 ring-primary/15">
-                <Building2 className="h-4 w-4" />
+                <LayoutGrid className="h-4 w-4" />
               </div>
               <span className="text-xs font-bold uppercase tracking-widest text-primary/70">
-                Registry System v4.0
+                Company Database
               </span>
             </div>
             <div className="space-y-2">
               <h1 className="text-5xl md:text-7xl font-sans font-extrabold tracking-tighter text-foreground leading-[0.95]">
-                Global <span className="text-primary">Index</span>
+                All <span className="text-primary">Companies</span>
               </h1>
               <p className="text-muted-foreground text-base max-w-lg leading-relaxed">
-                Live distribution analysis of {companies.length} indexed firms with difficulty-weighted logic module counts.
+                Browse {companies.length} companies and see exactly which questions they ask.
               </p>
             </div>
           </div>
@@ -124,7 +121,7 @@ export default function CompaniesPage() {
         <div className="flex items-center gap-1.5 flex-wrap">
           <FilterChip active={filter === "all"} onClick={() => setFilter("all")} label="All" icon={Globe} />
           <FilterChip active={filter === "trending"} onClick={() => setFilter("trending")} label="Trending" icon={Zap} />
-          <FilterChip active={filter === "enterprise"} onClick={() => setFilter("enterprise")} label="Enterprise" icon={Sparkles} />
+          <FilterChip active={filter === "enterprise"} onClick={() => setFilter("enterprise")} label="Enterprise" icon={Wand2} />
         </div>
 
         {/* Sort — pushed to the right */}
@@ -133,7 +130,7 @@ export default function CompaniesPage() {
             onClick={() => setShowSortMenu(!showSortMenu)}
             className="h-10 px-4 flex items-center gap-2 bg-secondary/60 border border-border/40 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-white dark:hover:bg-secondary/40 hover:border-primary/30 transition-all shadow-sm"
           >
-            <ArrowUpDown className="h-3.5 w-3.5 text-primary" />
+            <ChevronsUpDown className="h-3.5 w-3.5 text-primary" />
             <span className="truncate max-w-[80px]">
               {sortMode === "volume_desc" ? "Volume ↓" : sortMode === "volume_asc" ? "Volume ↑" : sortMode === "alpha_asc" ? "A → Z" : "Z → A"}
             </span>
@@ -195,18 +192,23 @@ export default function CompaniesPage() {
             <Link 
               key={company.slug}
               href={`/company/${company.slug}`} 
-              className="premium-card group relative p-6 flex flex-col justify-between hover:border-primary/40 hover:shadow-xl hover:shadow-primary/8 hover:-translate-y-1 overflow-hidden bg-white dark:bg-black"
+              className="premium-card group relative p-6 flex flex-col justify-between overflow-hidden bg-white dark:bg-black"
             >
-              {/* Hover Glow */}
-              <div className="absolute top-0 right-0 w-28 h-28 bg-primary/5 rounded-full -mr-14 -mt-14 blur-2xl group-hover:bg-primary/10 transition-colors" />
+              {/* Subtle accent line */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-primary/10 group-hover:bg-primary/30 transition-colors" />
               
               <div className="space-y-5 relative z-10">
                 <div className="flex justify-between items-start">
-                  <div className="h-12 w-12 rounded-xl bg-secondary/60 border border-border/60 flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-300 text-muted-foreground">
-                    <Building2 className="h-5 w-5 transition-transform group-hover:scale-110" />
+                  <div className="h-12 w-12 rounded-xl bg-white dark:bg-secondary/60 border border-border/60 flex items-center justify-center transition-all duration-300 text-muted-foreground overflow-hidden">
+                    <CompanyLogo 
+                      slug={company.slug} 
+                      name={company.displayName} 
+                      className="h-7 w-7 transition-transform group-hover:scale-105"
+                      fallbackClassName="transition-transform group-hover:scale-105" 
+                    />
                   </div>
                   <div className="flex items-center gap-1.5 text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100/80 text-[10px] font-black tracking-wide">
-                    <TrendingUp className="h-3 w-3" />
+                    <Boxes className="h-3 w-3" />
                     {percentage}%
                   </div>
                 </div>
@@ -224,15 +226,15 @@ export default function CompaniesPage() {
               </div>
 
               <div className="pt-5 space-y-3 relative z-10">
-                <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-gradient-to-r from-primary to-indigo-400 rounded-full transition-all duration-700 group-hover:brightness-110"
+                    className="h-full bg-primary/80 rounded-full transition-all duration-700"
                     style={{ width: `${Math.min(100, (company.liveCount / 300) * 100)}%` }}
                   />
                 </div>
-                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground group-hover:text-primary transition-colors">
+                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors">
                   <span className="flex items-center gap-1">
-                    Module Count 
+                    Questions 
                     <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
                   </span>
                   <span className="font-black text-foreground text-xs group-hover:text-primary transition-colors">{company.liveCount}</span>
@@ -245,7 +247,7 @@ export default function CompaniesPage() {
 
       {filteredAndSorted.length === 0 && (
         <div className="py-28 text-center rounded-2xl bg-white/60 dark:bg-black/60 border border-border border-dashed flex flex-col items-center gap-4">
-          <Command className="h-10 w-10 text-muted-foreground/30" />
+          <Boxes className="h-10 w-10 text-muted-foreground/30" />
           <div className="space-y-1">
             <h2 className="text-lg font-semibold">No firms found</h2>
             <p className="text-muted-foreground text-sm">

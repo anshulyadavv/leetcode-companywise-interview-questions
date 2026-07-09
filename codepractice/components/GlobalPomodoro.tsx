@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useDataStore } from "@/lib/data-store";
 import { usePathname } from "next/navigation";
-import { Play, Pause, Square, RotateCcw, Minimize2, Maximize2, Edit2, Check } from "lucide-react";
+import { Play, Pause, Square, RefreshCw, Minimize, Maximize, Pen, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // ── Pomodoro Widget ─────────────────────────────────────────────────────────
@@ -65,7 +65,7 @@ export function PomodoroWidget({ isFloating = false }: { isFloating?: boolean })
             className="p-1.5 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-all"
             title="Set custom time"
           >
-            <Edit2 className="h-3 w-3" />
+            <Pen className="h-3 w-3" />
           </button>
           {/* Dock/undock */}
           {isFloating ? (
@@ -74,7 +74,7 @@ export function PomodoroWidget({ isFloating = false }: { isFloating?: boolean })
               className="p-1.5 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-all"
               title="Dock to planner"
             >
-              <Maximize2 className="h-3 w-3" />
+              <Maximize className="h-3 w-3" />
             </button>
           ) : (
             <button
@@ -82,7 +82,7 @@ export function PomodoroWidget({ isFloating = false }: { isFloating?: boolean })
               className="p-1.5 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-all"
               title="Pop out"
             >
-              <Minimize2 className="h-3 w-3" />
+              <Minimize className="h-3 w-3" />
             </button>
           )}
         </div>
@@ -166,7 +166,7 @@ export function PomodoroWidget({ isFloating = false }: { isFloating?: boolean })
           className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
           title="Reset"
         >
-          <RotateCcw className="h-4 w-4" />
+          <RefreshCw className="h-4 w-4" />
         </button>
 
         {/* Play/Pause */}

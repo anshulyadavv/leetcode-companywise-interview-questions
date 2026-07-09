@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import type { KeyboardEvent } from "react";
 import { useDataStore } from "@/lib/data-store";
-import { ChevronLeft, ChevronRight, Calendar, X, Circle, CheckCircle2, Timer, AlignJustify, LayoutGrid } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar, X, Circle, CheckCircle2, Clock, Menu, Grid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PomodoroWidget } from "@/components/GlobalPomodoro";
 
@@ -133,7 +133,7 @@ function MiniCalendar({
   }
 
   return (
-    <div className="w-[248px] select-none">
+    <div className="w-[260px] select-none p-2.5">
       <div className="flex items-center justify-between mb-2">
         <span className="text-[13px] font-semibold">{ML[calM.getMonth()]} {calM.getFullYear()}</span>
         <div className="flex gap-0.5">
@@ -201,7 +201,7 @@ function MiniCalendar({
 function MonthPicker({ cursor, onSelect }: { cursor: Date; onSelect: (d: Date) => void }) {
   const [year, setYear] = useState(cursor.getFullYear());
   return (
-    <div className="w-[200px] select-none">
+    <div className="w-[220px] select-none p-2.5">
       <div className="flex items-center justify-between mb-3">
         <span className="text-[13px] font-semibold">{year}</span>
         <div className="flex gap-0.5">
@@ -230,7 +230,7 @@ function QuarterPicker({ cursor, onSelect }: { cursor: Date; onSelect: (d: Date)
   const [year, setYear] = useState(cursor.getFullYear());
   const curQ = getQ(cursor); const curY = cursor.getFullYear();
   return (
-    <div className="w-[190px] select-none">
+    <div className="w-[210px] select-none p-2.5">
       <div className="flex items-center justify-between mb-3">
         <span className="text-[13px] font-semibold">{year}</span>
         <div className="flex gap-0.5">
@@ -260,7 +260,7 @@ function YearPicker({ cursor, onSelect }: { cursor: Date; onSelect: (y: number) 
   const [rs, setRs] = useState(Math.floor(curYear/8)*8);
   const years = Array.from({length:8},(_,i)=>rs+i);
   return (
-    <div className="w-[190px] select-none">
+    <div className="w-[210px] select-none p-2.5">
       <div className="flex items-center justify-between mb-3">
         <span className="text-[13px] font-semibold">{rs} – {rs+7}</span>
         <div className="flex gap-0.5">
@@ -282,7 +282,7 @@ function YearPicker({ cursor, onSelect }: { cursor: Date; onSelect: (y: number) 
 }
 
 /** Dropdown wrapper — sits below the label button */
-function PickerDropdown({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
+function PickerDropdown({ children, onClose, align = "left" }: { children: React.ReactNode; onClose: () => void; align?: "left" | "right" }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     function handler(e: MouseEvent) {
@@ -296,7 +296,10 @@ function PickerDropdown({ children, onClose }: { children: React.ReactNode; onCl
   }, [onClose]);
   return (
     <div ref={ref}
-      className="absolute right-0 top-full mt-2 z-[200] bg-white dark:bg-[#1c1c1e] border border-border rounded-xl shadow-2xl p-1 animate-in fade-in zoom-in-95 duration-100"
+      className={cn(
+        "absolute top-full mt-2 z-[200] bg-white dark:bg-[#1c1c1e] border border-border rounded-xl shadow-2xl p-1 animate-in fade-in zoom-in-95 duration-100",
+        align === "left" ? "left-0" : "right-0"
+      )}
     >
       {children}
     </div>
@@ -402,19 +405,19 @@ export default function PlannerPage() {
                 title="Compact cards"
                 className={cn("p-1.5 rounded-md transition-all", cardSize === "compact" ? "bg-white dark:bg-muted shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
               >
-                <LayoutGrid className="h-3.5 w-3.5" />
+                <Grid className="h-3.5 w-3.5" />
               </button>
               <button
                 onClick={() => setCardSize("normal")}
                 title="Normal cards"
                 className={cn("p-1.5 rounded-md transition-all", cardSize === "normal" ? "bg-white dark:bg-muted shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
               >
-                <AlignJustify className="h-3.5 w-3.5" />
+                <Menu className="h-3.5 w-3.5" />
               </button>
             </div>
           )}
 
-          {/* Timer button */}
+          {/* Clock button */}
           <div className="relative">
             <button
               onClick={() => setShowPomodoro(v => !v)}
@@ -426,15 +429,15 @@ export default function PlannerPage() {
                   : "text-muted-foreground border-border/50 hover:text-foreground hover:bg-secondary"
               )}
             >
-              <Timer className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Timer</span>
+              <Clock className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Clock</span>
               {pomodoro.isRunning && (
                 <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
               )}
             </button>
             {/* Pop up Pomodoro under the button */}
             {showPomodoro && (
-              <PickerDropdown onClose={() => setShowPomodoro(false)}>
+              <PickerDropdown onClose={() => setShowPomodoro(false)} align="right">
                 <div className="w-[260px]">
                   <PomodoroWidget isFloating={false} />
                 </div>

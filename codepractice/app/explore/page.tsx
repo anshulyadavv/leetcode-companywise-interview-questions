@@ -2,7 +2,7 @@
 
 import Tracker from "@/components/Tracker";
 import Dashboard from "@/components/Dashboard";
-import { Compass, Activity, Search } from "lucide-react";
+import { Globe, Activity, Search } from "lucide-react";
 
 export default function ExplorePage() {
   return (
@@ -12,13 +12,13 @@ export default function ExplorePage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-3">
             <div className="page-header-badge">
-              <Compass className="h-3 w-3" /> Dashboard Overview
+              <Globe className="h-3 w-3" /> Dashboard Overview
             </div>
             <h1 className="text-5xl md:text-6xl font-sans font-extrabold tracking-tight text-foreground leading-none">
-              Explore <span className="text-primary">Intelligence</span>
+              Explore <span className="text-primary">Questions</span>
             </h1>
             <p className="text-muted-foreground text-base max-w-lg leading-relaxed">
-              Interrogate our indexed logic modules and synchronize your preparation progress across all firms and topics.
+              Browse our complete list of interview questions and track your progress across all companies and topics.
             </p>
           </div>
 
@@ -50,7 +50,7 @@ export default function ExplorePage() {
           <div className="section-icon-wrap">
             <Search className="h-4 w-4" />
           </div>
-          <h2 className="text-xl font-bold tracking-tight">Logic Modules</h2>
+          <h2 className="text-xl font-bold tracking-tight">Questions</h2>
         </div>
         <Dashboard />
       </section>

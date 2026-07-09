@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import GlobalPomodoro from "@/components/GlobalPomodoro";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { Terminal } from "lucide-react";
+import { Code } from "lucide-react";
 
 const mono = JetBrains_Mono({ 
   subsets: ["latin"], 
@@ -32,7 +32,7 @@ export default function RootLayout({
       <body suppressHydrationWarning className={`${mono.variable} ${sans.variable} font-sans h-screen overflow-hidden bg-background text-foreground`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Navbar />
-          <main className="h-full pt-16 overflow-y-auto scroll-smooth">
+          <main id="main-scroll-container" className="h-full pt-16 overflow-y-auto scroll-smooth">
             {children}
             <Footer />
           </main>

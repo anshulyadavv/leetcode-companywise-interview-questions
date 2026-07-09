@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Terminal, Compass, Building2, Layers, Trophy, Sparkles, Code2, BookOpen, Timer } from "lucide-react";
+import { ArrowRight, Code, Globe, LayoutGrid, Layers, Star, Wand2, BookOpen, Clock, Building2, FileStack, Zap, Sparkles } from "lucide-react";
 import FeatureCarousel from "@/components/FeatureCarousel";
 
 export default function LandingPage() {
@@ -12,7 +12,7 @@ export default function LandingPage() {
       <header className="relative pt-16 pb-20 mesh-gradient">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col items-center text-center space-y-7">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-xs font-semibold rounded-full border border-primary/20 animate-fade-up">
-            <Sparkles className="h-3.5 w-3.5" />
+            <Wand2 className="h-3.5 w-3.5" />
             <span>Built by engineers, for engineers</span>
           </div>
 
@@ -43,9 +43,9 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4">
             {[
               { label: "Companies tracked", value: "684+", icon: Building2 },
-              { label: "Practice problems", value: "3,300+", icon: Layers },
-              { label: "Avg load time", value: "< 100ms", icon: Compass },
-              { label: "Free forever", value: "100%", icon: Trophy },
+              { label: "Practice problems", value: "3,300+", icon: FileStack },
+              { label: "Avg load time", value: "< 100ms", icon: Zap },
+              { label: "Free forever", value: "100%", icon: Sparkles },
             ].map((stat, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="p-2.5 bg-primary/8 rounded-xl text-primary shrink-0">
@@ -74,21 +74,21 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                icon: Building2,
+                icon: LayoutGrid,
                 title: "Company-specific lists",
                 desc: "See exactly which problems appear at Google, Meta, Amazon — sorted by how often they actually show up in interviews.",
                 color: "text-blue-500",
                 bg: "bg-blue-500/8",
               },
               {
-                icon: Code2,
+                icon: Code,
                 title: "Track what you've done",
                 desc: "Check off problems as you go. Filter by difficulty, topic, or company. Never lose track of where you left off.",
                 color: "text-emerald-500",
                 bg: "bg-emerald-500/8",
               },
               {
-                icon: Timer,
+                icon: Clock,
                 title: "Plan your sessions",
                 desc: "Use the built-in planner + Pomodoro timer to structure your prep. Set daily goals and actually stick to them.",
                 color: "text-primary",

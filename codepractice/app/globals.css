@@ -5,11 +5,11 @@
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
-  --primary: #f97316; /* Orange 500 */
+  --primary: #4f46e5; /* Indigo 600 */
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
   --secondary-foreground: #475569;
-  --accent: #ea580c; /* Orange 600 */
+  --accent: #4338ca; /* Indigo 700 */
   --accent-foreground: #ffffff;
   --muted: #f8fafc;
   --muted-foreground: #64748b;
@@ -20,13 +20,13 @@
 .dark {
   --background: #000000;
   --foreground: #f4f4f5;
-  --primary: #f97316; 
+  --primary: #6366f1; /* Indigo 500 */
   --primary-foreground: #ffffff;
-  --secondary: #1c1c1e;   /* Apple-style dark surface */
+  --secondary: #1c1c1e;
   --secondary-foreground: #d4d4d8;
-  --accent: #ea580c;
+  --accent: #4f46e5; /* Indigo 600 */
   --accent-foreground: #ffffff;
-  --muted: #242428;       /* Slightly lighter for nested surfaces */
+  --muted: #242428;
   --muted-foreground: #a1a1aa;
   --border: #323236;
   --border-hover: #48484d;
@@ -59,9 +59,9 @@
   --font-mono: var(--font-mono);
   --font-sans: var(--font-sans);
   
-  --shadow-premium: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-  --shadow-soft: 0 2px 12px 0 rgba(0, 0, 0, 0.04);
+  --shadow-premium: 0 4px 12px -2px rgba(0, 0, 0, 0.03), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+  --shadow-soft: 0 2px 8px 0 rgba(0, 0, 0, 0.02);
 }
 
 @layer base {
@@ -89,7 +89,7 @@
 
 @layer components {
   .premium-card {
-    @apply bg-white dark:bg-[#1c1c1e] border border-border rounded-xl shadow-premium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+    @apply bg-white dark:bg-[#1c1c1e] border border-border rounded-xl shadow-soft transition-colors duration-200 hover:border-primary/30;
   }
 
   .glass-effect {
@@ -164,13 +164,12 @@
 }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-/* Mesh Gradient Background */
+/* Mesh Gradient Background - Muted for focus */
 .mesh-gradient {
   background-color: var(--color-background);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.05) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, rgba(234, 88, 12, 0.05) 0, transparent 50%), 
-    radial-gradient(at 100% 0%, rgba(249, 115, 22, 0.05) 0, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.03) 0, transparent 40%), 
+    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.02) 0, transparent 40%);
 }
 
 /* Control Bar unified style */

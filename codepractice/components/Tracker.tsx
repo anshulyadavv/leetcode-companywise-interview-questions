@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useDataStore, TodoItem } from "@/lib/data-store";
-import { Zap, CheckCircle2, BarChart3, Activity, Target } from "lucide-react";
+import { Zap, CheckCircle2, BarChart2, Activity, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Tracker() {
@@ -67,7 +67,7 @@ export default function Tracker() {
               <div className="section-icon-wrap">
                 <Activity className="h-4 w-4" />
               </div>
-              <h3 className="text-sm font-bold tracking-tight">Acquisition Timeline</h3>
+              <h3 className="text-sm font-bold tracking-tight">Activity Heatmap</h3>
             </div>
             <div className="flex gap-1 items-center">
               <span className="text-[10px] font-bold text-muted-foreground mr-1">Intensity</span>
@@ -85,7 +85,7 @@ export default function Tracker() {
         <div className="premium-card p-6 space-y-5">
           <div className="flex items-center gap-3">
             <div className="section-icon-wrap">
-              <BarChart3 className="h-4 w-4" />
+              <BarChart2 className="h-4 w-4" />
             </div>
             <h3 className="text-sm font-bold tracking-tight">Difficulty Breakdown</h3>
           </div>
