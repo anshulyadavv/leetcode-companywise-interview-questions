@@ -4,7 +4,7 @@ A local-first practice tracker and question bank for technical interviews.
 
 Practice LeetCode questions categorized by company, track your progress over time, and plan daily study sessions with a built-in focus timer.
 
-![CodePractice Dashboard](public/images/dashboard.png)
+![CodePractice Dashboard](codepractice/public/images/dashboard.png)
 
 ## What's Inside
 
