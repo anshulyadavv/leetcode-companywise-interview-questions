@@ -360,7 +360,7 @@ export default function PlannerPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-5.5rem)] overflow-hidden bg-[#f7f7f8] dark:bg-background">
       {/* Sub-header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-white dark:bg-[#111113] border-b border-border/60 shrink-0 gap-2">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 bg-white dark:bg-[#111113] border-b border-border/60 shrink-0 gap-2 w-full">
         {/* Date Navigator */}
         <div className="flex items-center gap-1.5 relative min-w-0">
           <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -561,7 +561,7 @@ function NotesTile({
 // ── Shared: Panel card ─────────────────────────────────────────────────────
 function Panel({ title, icon, children, className, headerBg }: { title?: string, icon?: React.ReactNode, children: React.ReactNode, className?: string, headerBg?: string }) {
   return (
-    <div className={cn("flex flex-col rounded-xl border border-border/60 bg-white dark:bg-[#1c1c1e] shadow-sm overflow-hidden min-w-0", className)}>
+    <div className={cn("flex flex-col rounded-xl border border-border/60 bg-white dark:bg-[#1c1c1e] shadow-sm overflow-hidden min-w-0 w-full", className)}>
       {title && (
         <div className={cn("flex items-center gap-2 px-4 py-3 border-b border-border/40 shrink-0", headerBg ?? "bg-white/80 dark:bg-[#242428]")}>
           {icon}
@@ -581,8 +581,8 @@ function DayView({ cursor }: { cursor: Date }) {
   const dayNoteKey = `day-notes-${dateKey}`;
 
   return (
-    <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-4 items-start max-w-[1248px] mx-auto">
-      <div className="md:col-span-2 space-y-4">
+    <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 items-start w-full">
+      <div className="lg:col-span-2 space-y-4">
         <Panel title="Tasks" icon={<Calendar className="h-4 w-4 text-blue-500"/>} headerBg="bg-blue-50/60 dark:bg-blue-500/10">
           <TaskList date={dateKey}/>
         </Panel>
@@ -615,8 +615,8 @@ function WeekView({ cursor, cardSize }: { cursor: Date; cardSize: "compact" | "n
   const minCardH = cardSize === "compact" ? "min-h-[200px]" : cardSize === "spacious" ? "min-h-[380px]" : "min-h-[280px]";
 
   return (
-    <div className="p-4">
-      <div className={cn("grid gap-4 w-full min-w-0 auto-rows-min", gridCols)}>
+    <div className="p-4 sm:p-6 w-full">
+      <div className={cn("grid gap-4 sm:gap-5 w-full min-w-0 auto-rows-min", gridCols)}>
         {/* Weekly Priority */}
         <Panel title="Priority" headerBg="bg-rose-50/50 dark:bg-rose-500/10" className={minCardH}>
           <NotesTile noteKey={priorityKey}
@@ -650,8 +650,8 @@ function WeekView({ cursor, cardSize }: { cursor: Date; cardSize: "compact" | "n
 function MonthView({ cursor }: { cursor: Date }) {
   const mk = mmKey(cursor);
   return (
-    <div className="p-5 space-y-4 max-w-[1248px] mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         <Panel title="Focus" headerBg="bg-slate-50 dark:bg-secondary">
           <NotesTile noteKey={`month-focus-${mk}`}
             placeholder="What will you focus on this month?" minH="min-h-[200px]"/>
@@ -680,8 +680,8 @@ function QuarterView({ cursor }: { cursor: Date }) {
   const qs = qStart(cursor);
   const months = [0,1,2].map(i => addMonths(qs,i));
   return (
-    <div className="p-5 max-w-[1248px] mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="p-4 sm:p-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 w-full">
         {months.map(m => {
           const mk = mmKey(m);
           return (
@@ -704,15 +704,15 @@ function YearView({ cursor }: { cursor: Date }) {
   const months = Array.from({length:12}, (_,i) => new Date(year,i,1));
   const now    = new Date();
   return (
-    <div className="p-5 max-w-[1248px] mx-auto">
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="p-4 sm:p-6 w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 w-full">
         {months.map(m => {
           const mk      = mmKey(m);
           const isCur   = m.getFullYear()===now.getFullYear() && m.getMonth()===now.getMonth();
           return (
             <div key={mk}
               className={cn(
-                "rounded-xl border bg-blue-50/50 dark:bg-blue-500/5 p-4 flex flex-col gap-2.5 min-h-[150px] transition-all hover:shadow-sm",
+                "rounded-xl border bg-blue-50/50 dark:bg-blue-500/5 p-4 sm:p-5 flex flex-col gap-2.5 min-h-[160px] transition-all hover:shadow-sm",
                 isCur ? "border-primary/40 ring-2 ring-primary/15" : "border-blue-100/80 dark:border-blue-500/10"
               )}
             >
@@ -806,7 +806,7 @@ function DashboardView({ cursor }: { cursor: Date }) {
           <button onClick={() => handleAdd('pomodoro')} className="w-full text-left px-3 py-2 text-sm hover:bg-secondary rounded-lg transition-colors">Pomodoro</button>
         </div>
       )}
-      <div ref={containerRef} className="flex-1 w-full h-[800px] overflow-y-auto p-4 pt-4">
+      <div ref={containerRef} className="flex-1 w-full h-full min-h-[700px] overflow-y-auto p-4 sm:p-6">
         {currentBlocks.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-muted-foreground pb-20 pointer-events-none">
             <div className="p-4 rounded-full bg-secondary mb-4 shadow-[0_1px_2px_rgba(0,0,0,0.02),0_4px_16px_rgba(0,0,0,0.03)] border border-black/5 dark:border-white/5">

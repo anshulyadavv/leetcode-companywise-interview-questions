@@ -116,56 +116,6 @@ export default function LandingPage() {
         <FeatureCarousel />
       </section>
 
-      {/* Upcoming updates */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="text-center space-y-1.5 max-w-xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary border border-border text-xs font-semibold text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-signal-medium" />
-            <span>Roadmap</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-            Upcoming updates
-          </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            We are expanding CodePractice beyond coding questions to cover the full technical interview loop.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="apple-card p-6 sm:p-7 space-y-3 flex flex-col justify-between">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-foreground tracking-tight">
-                  System design
-                </h3>
-                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
-                  In progress
-                </span>
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Core architectural patterns, scalability trade-offs, and deep dives into real system design interview questions asked at top tech companies.
-              </p>
-            </div>
-          </div>
-
-          <div className="apple-card p-6 sm:p-7 space-y-3 flex flex-col justify-between">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-foreground tracking-tight">
-                  Computer fundamentals
-                </h3>
-                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-secondary text-muted-foreground border border-border">
-                  Coming soon
-                </span>
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Curated revision modules and common interview questions for operating systems, networking protocols, databases, and concurrency.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Call to action */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="apple-card p-8 sm:p-12 text-center space-y-5 bg-gradient-to-b from-card to-secondary/40">

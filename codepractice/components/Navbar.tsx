@@ -2,16 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Code, Moon, Sun } from "lucide-react";
+import { Code, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { name: "Questions", href: "/explore" },
-  { name: "Companies", href: "/companies" },
-  { name: "Planner",   href: "/planner" },
-];
 
 function GithubIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
@@ -25,15 +19,49 @@ export default function Navbar() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [showRoadmap, setShowRoadmap] = useState(false);
+  const roadmapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Close roadmap popover on route change
+  useEffect(() => {
+    setShowRoadmap(false);
+  }, [pathname]);
+
+  // Robust document-level click outside & escape listener
+  useEffect(() => {
+    if (!showRoadmap) return;
+
+    function handlePointerDown(e: MouseEvent | TouchEvent) {
+      if (roadmapRef.current && !roadmapRef.current.contains(e.target as Node)) {
+        setShowRoadmap(false);
+      }
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setShowRoadmap(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showRoadmap]);
+
   return (
     <header className="fixed top-3 sm:top-4 inset-x-0 mx-auto z-50 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] max-w-6xl transition-all">
       <nav className="h-13 sm:h-14 px-3 sm:px-4 flex items-center justify-between rounded-2xl border border-black/[0.08] dark:border-white/[0.12] bg-white/85 dark:bg-[#18181b]/85 backdrop-blur-xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.35)] transition-colors">
-        {/* Left: Brand + Nav links immediately adjacent */}
+        {/* Left: Brand + Nav links */}
         <div className="flex items-center">
           <Link 
             href="/" 
@@ -48,23 +76,93 @@ export default function Navbar() {
           </Link>
 
           <div className="ml-4 sm:ml-7 flex items-center gap-0.5 sm:gap-1.5">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    "px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-colors select-none",
-                    isActive
-                      ? "text-foreground font-semibold bg-black/[0.05] dark:bg-white/[0.08]"
-                      : "text-muted-foreground hover:text-foreground hover:bg-black/[0.03] dark:hover:bg-white/[0.04]"
-                  )}
-                >
-                  {item.name}
-                </Link>
-              );
-            })}
+            <Link
+              href="/explore"
+              className={cn(
+                "px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-colors select-none",
+                pathname === "/explore"
+                  ? "text-foreground font-semibold bg-black/[0.05] dark:bg-white/[0.08]"
+                  : "text-muted-foreground hover:text-foreground hover:bg-black/[0.03] dark:hover:bg-white/[0.04]"
+              )}
+            >
+              Questions
+            </Link>
+
+            {/* Roadmap element next to Questions */}
+            <div ref={roadmapRef} className="relative">
+              <button
+                onClick={() => setShowRoadmap(v => !v)}
+                className={cn(
+                  "px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-colors select-none flex items-center gap-1.5 cursor-pointer",
+                  showRoadmap || pathname === "/roadmap"
+                    ? "text-foreground font-semibold bg-black/[0.05] dark:bg-white/[0.08]"
+                    : "text-muted-foreground hover:text-foreground hover:bg-black/[0.03] dark:hover:bg-white/[0.04]"
+                )}
+                title="Roadmap (under development)"
+                aria-label="Roadmap (under development)"
+                aria-expanded={showRoadmap}
+              >
+                <span>Roadmap</span>
+                <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded-full bg-secondary border border-border text-muted-foreground hidden sm:inline">
+                  Soon
+                </span>
+              </button>
+
+              {showRoadmap && (
+                <div className="absolute left-0 top-full mt-2 w-72 sm:w-80 apple-card p-4 shadow-2xl border border-border z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-signal-medium animate-pulse" />
+                        <span className="text-xs font-bold text-foreground">Roadmap</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-secondary text-muted-foreground border border-border">
+                          In progress
+                        </span>
+                        <button
+                          onClick={() => setShowRoadmap(false)}
+                          className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                          aria-label="Close roadmap dialog"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-xs font-semibold text-foreground">
+                      Under development, more updates to come
+                    </p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      We are working on dedicated practice modules for system design and computer science fundamentals.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <Link
+              href="/companies"
+              className={cn(
+                "px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-colors select-none",
+                pathname.startsWith("/companies") || pathname.startsWith("/company")
+                  ? "text-foreground font-semibold bg-black/[0.05] dark:bg-white/[0.08]"
+                  : "text-muted-foreground hover:text-foreground hover:bg-black/[0.03] dark:hover:bg-white/[0.04]"
+              )}
+            >
+              Companies
+            </Link>
+
+            <Link
+              href="/planner"
+              className={cn(
+                "px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-colors select-none",
+                pathname.startsWith("/planner")
+                  ? "text-foreground font-semibold bg-black/[0.05] dark:bg-white/[0.08]"
+                  : "text-muted-foreground hover:text-foreground hover:bg-black/[0.03] dark:hover:bg-white/[0.04]"
+              )}
+            >
+              Planner
+            </Link>
           </div>
         </div>
 
