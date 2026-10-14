@@ -1,20 +1,15 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useDataStore } from "@/lib/data-store";
 import { usePathname } from "next/navigation";
 import { Play, Pause, Square, RefreshCw, Minimize, Maximize, Pen, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// ── Pomodoro Widget ─────────────────────────────────────────────────────────
 export function PomodoroWidget({ isFloating = false }: { isFloating?: boolean }) {
   const { pomodoro, setPomodoro } = useDataStore();
   const [editingCustom, setEditingCustom] = useState(false);
   const [customInput, setCustomInput] = useState("");
-
-  const totalSeconds =
-    pomodoro.mode === "focus" ? 25 * 60 :
-    pomodoro.mode === "shortBreak" ? 5 * 60 : 15 * 60;
 
   const overrideMap: Record<string, number> = {
     focus: pomodoro.customFocusMin ? pomodoro.customFocusMin * 60 : 25 * 60,
@@ -48,41 +43,46 @@ export function PomodoroWidget({ isFloating = false }: { isFloating?: boolean })
     setCustomInput("");
   }
 
-  const modeLabel = pomodoro.mode === "focus" ? "Focus" : pomodoro.mode === "shortBreak" ? "Short Break" : "Long Break";
+  const modeLabel = pomodoro.mode === "focus" ? "Focus" : pomodoro.mode === "shortBreak" ? "Short break" : "Long break";
 
   return (
     <div className={cn(
-      "bg-white dark:bg-[#1c1c1e] border border-border shadow-xl rounded-2xl flex flex-col",
-      isFloating ? "w-60 shadow-2xl ring-1 ring-black/5 dark:ring-white/10 p-4" : "p-4 w-full"
+      "flex flex-col transition-all",
+      isFloating 
+        ? "w-64 liquid-glass rounded-2xl shadow-xl p-5 border border-border space-y-4" 
+        : "apple-card p-5 w-full space-y-4"
     )}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Pomodoro</span>
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold tracking-wider uppercase text-muted-foreground">
+          Timer
+        </span>
         <div className="flex items-center gap-1">
-          {/* Custom time edit */}
           <button
             onClick={() => { setEditingCustom(v => !v); setCustomInput(""); }}
-            className="p-1.5 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-all"
-            title="Set custom time"
+            className="h-7 w-7 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+            title="Custom minutes"
+            aria-label="Custom minutes"
           >
-            <Pen className="h-3 w-3" />
+            <Pen className="h-3.5 w-3.5" />
           </button>
-          {/* Dock/undock */}
           {isFloating ? (
             <button
               onClick={() => setPomodoro({ isDocked: true })}
-              className="p-1.5 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-all"
-              title="Dock to planner"
+              className="h-7 w-7 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+              title="Dock timer"
+              aria-label="Dock timer"
             >
-              <Maximize className="h-3 w-3" />
+              <Maximize className="h-3.5 w-3.5" />
             </button>
           ) : (
             <button
               onClick={() => setPomodoro({ isDocked: false })}
-              className="p-1.5 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-all"
-              title="Pop out"
+              className="h-7 w-7 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+              title="Pop out timer"
+              aria-label="Pop out timer"
             >
-              <Minimize className="h-3 w-3" />
+              <Minimize className="h-3.5 w-3.5" />
             </button>
           )}
         </div>
@@ -90,26 +90,29 @@ export function PomodoroWidget({ isFloating = false }: { isFloating?: boolean })
 
       {/* Custom time input */}
       {editingCustom && (
-        <div className="flex items-center gap-2 mb-3 p-2 bg-secondary/60 rounded-xl border border-border/50">
-          <span className="text-xs text-muted-foreground flex-1">Min for <span className="text-foreground font-semibold">{modeLabel}</span>:</span>
+        <div className="flex items-center gap-2 p-2 bg-secondary rounded-xl border border-border">
+          <span className="text-xs text-muted-foreground flex-1">Minutes:</span>
           <input
             type="number"
             min={1} max={120}
-            className="w-14 bg-background border border-border rounded-lg px-2 py-1 text-xs text-center font-bold focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-14 bg-background border border-border rounded-lg px-2 py-1 text-xs text-center font-bold focus:outline-none focus:ring-1 focus:ring-primary font-tabular"
             placeholder="25"
             value={customInput}
             onChange={e => setCustomInput(e.target.value)}
             onKeyDown={e => { if (e.key === "Enter") applyCustom(); if (e.key === "Escape") setEditingCustom(false); }}
             autoFocus
           />
-          <button onClick={applyCustom} className="p-1 rounded-md bg-primary text-white hover:bg-primary/80 transition-colors">
+          <button 
+            onClick={applyCustom} 
+            className="h-6 w-6 rounded-md bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary-hover transition-colors"
+          >
             <Check className="h-3 w-3" />
           </button>
         </div>
       )}
 
-      {/* Mode tabs */}
-      <div className="flex gap-1 mb-4 bg-secondary/50 p-1 rounded-xl">
+      {/* Symmetrical Segmented Mode Track: 3 equal columns */}
+      <div className="grid grid-cols-3 gap-1 p-1 bg-secondary rounded-xl border border-border/60 w-full">
         {([
           { id: "focus", label: "Focus" },
           { id: "shortBreak", label: "5m" },
@@ -119,9 +122,9 @@ export function PomodoroWidget({ isFloating = false }: { isFloating?: boolean })
             key={m.id}
             onClick={() => setMode(m.id)}
             className={cn(
-              "flex-1 py-1 text-[10px] font-bold rounded-lg transition-all",
-              pomodoro.mode === m.id
-                ? "bg-white dark:bg-muted text-foreground shadow-sm"
+              "py-1.5 text-xs font-semibold rounded-lg transition-all text-center whitespace-nowrap",
+              pomodoro.mode === m.id 
+                ? "bg-white dark:bg-[#2c2c2e] text-foreground shadow-xs font-bold" 
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
@@ -130,62 +133,71 @@ export function PomodoroWidget({ isFloating = false }: { isFloating?: boolean })
         ))}
       </div>
 
-      {/* Donut timer */}
-      <div className="flex items-center justify-center mb-4">
-        <div className="relative">
+      {/* Perfectly Centered Circular Ring */}
+      <div className="flex items-center justify-center py-1">
+        <div className="relative w-[136px] h-[136px] flex items-center justify-center">
           <svg width="136" height="136" className="-rotate-90">
-            {/* Track */}
-            <circle cx="68" cy="68" r={radius} fill="none" stroke="currentColor"
-              className="text-secondary" strokeWidth="8" />
-            {/* Progress */}
-            <circle cx="68" cy="68" r={radius} fill="none"
-              stroke="var(--color-primary)" strokeWidth="8"
+            <circle
+              cx="68"
+              cy="68"
+              r={radius}
+              fill="none"
+              stroke="currentColor"
+              className="text-secondary"
+              strokeWidth="6"
+            />
+            <circle
+              cx="68"
+              cy="68"
+              r={radius}
+              fill="none"
+              stroke="var(--color-primary)"
+              strokeWidth="6"
               strokeLinecap="round"
               strokeDasharray={circumference}
               strokeDashoffset={circumference * (1 - progress)}
               className="transition-all duration-1000 ease-linear"
             />
           </svg>
-          {/* Center content — sits inside the donut, not overlapping stroke */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground leading-none mb-1">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">
               {modeLabel}
             </span>
-            <span className="text-2xl font-black tabular-nums tracking-tighter text-foreground leading-none">
+            <span className="text-2xl font-bold font-tabular tracking-tight text-foreground">
               {formatTime(pomodoro.timeLeft)}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center justify-center gap-2">
-        {/* Reset */}
+      {/* Perfectly Symmetrical Control Actions */}
+      <div className="flex items-center justify-center gap-4 pt-1">
         <button
           onClick={() => setPomodoro({ timeLeft: effectiveTotal, isRunning: false })}
-          className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
-          title="Reset"
+          className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
+          title="Reset timer"
+          aria-label="Reset timer"
         >
           <RefreshCw className="h-4 w-4" />
         </button>
 
-        {/* Play/Pause */}
         <button
           onClick={() => setPomodoro({ isRunning: !pomodoro.isRunning })}
-          className="p-3 rounded-full bg-primary text-white hover:bg-primary/80 shadow-lg shadow-primary/25 transition-all hover:scale-105 active:scale-95"
+          className="h-11 w-11 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover flex items-center justify-center shadow-xs transition-all active:scale-95"
           title={pomodoro.isRunning ? "Pause" : "Start"}
+          aria-label={pomodoro.isRunning ? "Pause" : "Start"}
         >
           {pomodoro.isRunning
-            ? <Pause className="h-5 w-5" fill="currentColor" />
-            : <Play className="h-5 w-5 ml-0.5" fill="currentColor" />
+            ? <Pause className="h-4 w-4" fill="currentColor" />
+            : <Play className="h-4 w-4 ml-0.5" fill="currentColor" />
           }
         </button>
 
-        {/* Stop */}
         <button
           onClick={() => setPomodoro({ isRunning: false, timeLeft: effectiveTotal })}
-          className="p-2 rounded-full text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-all"
-          title="Stop & reset"
+          className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground hover:text-signal-hard hover:bg-secondary transition-all"
+          title="Stop timer"
+          aria-label="Stop timer"
         >
           <Square className="h-4 w-4" />
         </button>
@@ -194,12 +206,9 @@ export function PomodoroWidget({ isFloating = false }: { isFloating?: boolean })
   );
 }
 
-// ── Global engine + tab title sync + floating container ─────────────────────
 export default function GlobalPomodoro() {
   const { pomodoro, setPomodoro } = useDataStore();
-  const pathname = usePathname();
 
-  // Countdown engine
   useEffect(() => {
     if (!pomodoro.isRunning) return;
     const interval = setInterval(() => {
@@ -211,24 +220,21 @@ export default function GlobalPomodoro() {
     return () => clearInterval(interval);
   }, [pomodoro.isRunning, pomodoro.timeLeft, setPomodoro]);
 
-  // Tab title sync
   useEffect(() => {
     if (pomodoro.isRunning) {
       const m = Math.floor(pomodoro.timeLeft / 60);
       const s = pomodoro.timeLeft % 60;
-      const label = pomodoro.mode === "focus" ? "🍅" : "☕";
-      document.title = `${label} ${m.toString().padStart(2,"0")}:${s.toString().padStart(2,"0")} – CodePractice`;
+      const label = pomodoro.mode === "focus" ? "Focus" : "Break";
+      document.title = `(${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}) ${label} - CodePractice`;
     } else {
-      document.title = "CodePractice | Prep smarter, not harder";
+      document.title = "CodePractice";
     }
   }, [pomodoro.isRunning, pomodoro.timeLeft, pomodoro.mode]);
 
-  // Only float when user DELIBERATELY undocked (isDocked === false)
-  // When docked, it only appears inline on the planner page itself
   if (pomodoro.isDocked) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] animate-fade-up">
+    <div className="fixed bottom-6 right-6 z-[100] animate-in fade-in slide-in-from-bottom-4 duration-200">
       <PomodoroWidget isFloating={true} />
     </div>
   );

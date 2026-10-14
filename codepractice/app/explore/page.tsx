@@ -2,56 +2,33 @@
 
 import Tracker from "@/components/Tracker";
 import Dashboard from "@/components/Dashboard";
-import { Globe, Activity, Search } from "lucide-react";
 
 export default function ExplorePage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-14 pt-10 pb-20">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 py-8 pb-20">
       {/* Header */}
-      <header className="space-y-6 pb-10 border-b border-border">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-3">
-            <div className="page-header-badge">
-              <Globe className="h-3 w-3" /> Dashboard Overview
-            </div>
-            <h1 className="text-5xl md:text-6xl font-sans font-extrabold tracking-tight text-foreground leading-none">
-              Explore <span className="text-primary">Questions</span>
-            </h1>
-            <p className="text-muted-foreground text-base max-w-lg leading-relaxed">
-              Browse our complete list of interview questions and track your progress across all companies and topics.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-5 text-xs font-semibold text-muted-foreground bg-secondary/60 px-5 py-2.5 rounded-full border border-border/50 shrink-0 self-start md:self-auto">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>System Stable</span>
-            </div>
-            <span className="h-4 w-px bg-border" />
-            <span>Build v3.2.1</span>
-          </div>
-        </div>
+      <header className="space-y-1.5 pb-6 border-b border-border">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+          All Questions
+        </h1>
+        <p className="text-muted-foreground text-sm sm:text-base max-w-xl">
+          Browse questions by company, topic, or difficulty, and check them off as you solve them.
+        </p>
       </header>
 
-      {/* Progress Tracking */}
-      <section className="space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="section-icon-wrap">
-            <Activity className="h-4 w-4" />
-          </div>
-          <h2 className="text-xl font-bold tracking-tight">Progress Tracking</h2>
-        </div>
+      {/* Progress Tracking Section */}
+      <section className="space-y-3.5">
+        <h2 className="text-base font-semibold tracking-tight text-foreground">
+          Your progress
+        </h2>
         <Tracker />
       </section>
 
-      {/* Logic Modules */}
-      <section className="space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="section-icon-wrap">
-            <Search className="h-4 w-4" />
-          </div>
-          <h2 className="text-xl font-bold tracking-tight">Questions</h2>
-        </div>
+      {/* Questions Section */}
+      <section className="space-y-3.5">
+        <h2 className="text-base font-semibold tracking-tight text-foreground">
+          Question list
+        </h2>
         <Dashboard />
       </section>
     </div>

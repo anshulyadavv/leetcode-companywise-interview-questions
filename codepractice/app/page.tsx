@@ -1,140 +1,186 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowRight, Code, Globe, LayoutGrid, Layers, Star, Wand2, BookOpen, Clock, Building2, FileStack, Zap, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import FeatureCarousel from "@/components/FeatureCarousel";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="space-y-16 pb-20">
       {/* Hero Section */}
-      <header className="relative pt-16 pb-20 mesh-gradient">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col items-center text-center space-y-7">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-xs font-semibold rounded-full border border-primary/20 animate-fade-up">
-            <Wand2 className="h-3.5 w-3.5" />
-            <span>Built by engineers, for engineers</span>
-          </div>
+      <header className="relative pt-10 sm:pt-14 pb-10 text-center">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <Link
+            href="/planner"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary hover:bg-secondary/80 border border-border text-xs font-semibold text-secondary-foreground transition-colors group"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+            <span>Planner is now available</span>
+            <ArrowRight className="h-3 w-3 opacity-60 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
 
-          <div className="space-y-4 max-w-3xl animate-fade-up" style={{ animationDelay: '0.05s' }}>
-            <h1 className="text-5xl md:text-7xl font-sans font-extrabold tracking-tight text-foreground leading-[1.05]">
-              Stop grinding blindly.{" "}
-              <span className="text-primary">Practice smart.</span>
+          <div className="space-y-4">
+            <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-foreground leading-[1.1]">
+              Practice the questions <br className="hidden sm:inline" />
+              companies ask most.
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Know exactly which problems matter at each company. Track your progress, plan your week, and actually feel ready — not just busy.
+            <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              LeetCode problems sorted by how often they appear in interviews at Google, Meta, Amazon, and over 680 other companies.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-            <Link href="/explore" className="btn-premium px-8 py-3 text-sm">
-              Start Exploring <ArrowRight className="h-4 w-4" />
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <Link href="/explore" className="btn-primary px-6 py-2.5 text-sm">
+              View all questions <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link href="/companies" className="btn-secondary px-8 py-3 text-sm">
-              Browse Companies
+            <Link href="/companies" className="btn-secondary px-6 py-2.5 text-sm">
+              Browse companies
             </Link>
           </div>
         </div>
       </header>
 
       {/* Quick stats */}
-      <div className="bg-white dark:bg-[#111113] border-y border-border/60">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="apple-card p-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-y md:divide-y-0 md:divide-x divide-border">
             {[
-              { label: "Companies tracked", value: "684+", icon: Building2 },
-              { label: "Practice problems", value: "3,300+", icon: FileStack },
-              { label: "Avg load time", value: "< 100ms", icon: Zap },
-              { label: "Free forever", value: "100%", icon: Sparkles },
+              { label: "Companies", value: "684+" },
+              { label: "Questions", value: "3,300+" },
+              { label: "Accounts required", value: "Zero" },
+              { label: "Cost", value: "Free" },
             ].map((stat, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="p-2.5 bg-primary/8 rounded-xl text-primary shrink-0">
-                  <stat.icon className="h-4 w-4" />
+              <div key={i} className={`flex flex-col justify-center ${i > 0 ? "pt-4 md:pt-0 md:pl-6" : ""}`}>
+                <div className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight font-tabular">
+                  {stat.value}
                 </div>
-                <div>
-                  <div className="text-2xl font-extrabold text-foreground tracking-tight">{stat.value}</div>
-                  <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-0.5">{stat.label}</div>
+                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-1">
+                  {stat.label}
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Feature highlights */}
-      <section className="py-20 bg-white dark:bg-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 space-y-4 text-center mb-14">
-          <h2 className="text-4xl font-bold tracking-tight">Everything in one place</h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            No more juggling spreadsheets, LeetCode tabs, and Notion docs. We figured it out so you don't have to.
-          </p>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                icon: LayoutGrid,
-                title: "Company-specific lists",
-                desc: "See exactly which problems appear at Google, Meta, Amazon — sorted by how often they actually show up in interviews.",
-                color: "text-blue-500",
-                bg: "bg-blue-500/8",
-              },
-              {
-                icon: Code,
-                title: "Track what you've done",
-                desc: "Check off problems as you go. Filter by difficulty, topic, or company. Never lose track of where you left off.",
-                color: "text-emerald-500",
-                bg: "bg-emerald-500/8",
-              },
-              {
-                icon: Clock,
-                title: "Plan your sessions",
-                desc: "Use the built-in planner + Pomodoro timer to structure your prep. Set daily goals and actually stick to them.",
-                color: "text-primary",
-                bg: "bg-primary/8",
-              },
-            ].map((f, i) => (
-              <div key={i} className="premium-card p-6 space-y-4">
-                <div className={`inline-flex p-2.5 rounded-xl ${f.bg}`}>
-                  <f.icon className={`h-5 w-5 ${f.color}`} />
-                </div>
-                <h3 className="text-lg font-bold text-foreground">{f.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Interactive carousel */}
-      <section className="py-20 bg-[#fafafa] dark:bg-background border-t border-border/40">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 space-y-12">
-          <div className="text-center space-y-3">
-            <h2 className="text-4xl font-bold tracking-tight">See it in action</h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              Here's what your prep looks like once you're set up.
-            </p>
-          </div>
-          <FeatureCarousel />
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 mesh-gradient border-t border-border/60">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center space-y-6">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-            Ready to actually get offers?
+      {/* Features */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <div className="space-y-2 text-center max-w-xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+            Everything in one place
           </h2>
-          <p className="text-muted-foreground text-base max-w-lg mx-auto">
-            No account needed. Just open it, pick a company, and start practicing. That's it.
+          <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
+            Keep your question lists, progress, and study schedule together without juggling tabs.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/explore" className="btn-premium px-8 py-3">
-              Start Now <ArrowRight className="h-4 w-4" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              title: "Questions by company",
+              desc: "See which problems come up most often at each company, sorted by interview frequency data.",
+            },
+            {
+              title: "Track your progress",
+              desc: "Mark problems as solved, see your breakdown across easy, medium, and hard, and pick up right where you left off.",
+            },
+            {
+              title: "Daily study planner",
+              desc: "Add problems to daily or weekly queues and use the built-in timer to stay focused during practice sessions.",
+            },
+          ].map((feature, i) => (
+            <div key={i} className="apple-card p-6 space-y-3.5 flex flex-col justify-between">
+              <div className="space-y-2">
+                <h3 className="text-base font-semibold text-foreground tracking-tight">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {feature.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Workflow preview */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="text-center space-y-1.5">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+            How it works
+          </h2>
+          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+            Pick a company, work through their common questions, and track your practice over time.
+          </p>
+        </div>
+        <FeatureCarousel />
+      </section>
+
+      {/* Upcoming updates */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="text-center space-y-1.5 max-w-xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary border border-border text-xs font-semibold text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-signal-medium" />
+            <span>Roadmap</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+            Upcoming updates
+          </h2>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            We are expanding CodePractice beyond coding questions to cover the full technical interview loop.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="apple-card p-6 sm:p-7 space-y-3 flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-bold text-foreground tracking-tight">
+                  System design
+                </h3>
+                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
+                  In progress
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Core architectural patterns, scalability trade-offs, and deep dives into real system design interview questions asked at top tech companies.
+              </p>
+            </div>
+          </div>
+
+          <div className="apple-card p-6 sm:p-7 space-y-3 flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-bold text-foreground tracking-tight">
+                  Computer fundamentals
+                </h3>
+                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-secondary text-muted-foreground border border-border">
+                  Coming soon
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Curated revision modules and common interview questions for operating systems, networking protocols, databases, and concurrency.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to action */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="apple-card p-8 sm:p-12 text-center space-y-5 bg-gradient-to-b from-card to-secondary/40">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+            Start practicing
+          </h2>
+          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+            No sign-up or setup needed. Pick a company to practice for, or jump straight into the full list.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <Link href="/explore" className="btn-primary px-6 py-2.5 text-sm">
+              View all questions <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link href="/companies" className="btn-secondary px-8 py-3">
-              Browse Companies
+            <Link href="/companies" className="btn-secondary px-6 py-2.5 text-sm">
+              Browse companies
             </Link>
           </div>
         </div>

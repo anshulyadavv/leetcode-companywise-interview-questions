@@ -40,6 +40,19 @@ export interface PlannerTask {
   createdAt: string;
 }
 
+export type GridBlockType = 'rich-text' | 'task-list' | 'pomodoro' | 'stat-card';
+
+export interface GridBlock {
+  i: string; // id
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  type: GridBlockType;
+  data?: any; // optional data for the block
+}
+
+
 export interface PomodoroState {
   timeLeft: number;
   isRunning: boolean;
@@ -71,6 +84,9 @@ interface DataState {
   //   "year-notes-YYYY-MM"
   plannerNotes: Record<string, string>;
 
+  // Grid Layouts for the Notion-inspired planner
+  plannerLayouts: Record<string, GridBlock[]>;
+
   // Pomodoro state
   pomodoro: PomodoroState;
 
@@ -88,6 +104,9 @@ interface DataState {
   togglePlannerTask: (id: string) => void;
   deletePlannerTask: (id: string) => void;
   setPlannerNote: (key: string, value: string) => void;
+
+  setPlannerLayout: (key: string, layout: GridBlock[]) => void;
+  updateBlockData: (key: string, blockId: string, data: any) => void;
 
   setPomodoro: (update: Partial<PomodoroState>) => void;
 }
@@ -109,6 +128,7 @@ export const useDataStore = create<DataState>()(
 
       plannerTasks: [],
       plannerNotes: {},
+      plannerLayouts: {},
 
       pomodoro: {
         timeLeft: 25 * 60,
@@ -265,6 +285,24 @@ export const useDataStore = create<DataState>()(
         }));
       },
 
+      setPlannerLayout: (key, layout) => {
+        set((state) => ({
+          plannerLayouts: { ...state.plannerLayouts, [key]: layout },
+        }));
+      },
+
+      updateBlockData: (key, blockId, data) => {
+        set((state) => {
+          const blocks = state.plannerLayouts[key] || [];
+          return {
+            plannerLayouts: {
+              ...state.plannerLayouts,
+              [key]: blocks.map(b => b.i === blockId ? { ...b, data: { ...b.data, ...data } } : b)
+            }
+          };
+        });
+      },
+
       setPomodoro: (update) => {
         set((state) => ({
           pomodoro: { ...state.pomodoro, ...update },
@@ -278,6 +316,7 @@ export const useDataStore = create<DataState>()(
         completedQuestions: state.completedQuestions,
         plannerTasks: state.plannerTasks,
         plannerNotes: state.plannerNotes,
+        plannerLayouts: state.plannerLayouts,
         pomodoro: state.pomodoro,
       }),
     }

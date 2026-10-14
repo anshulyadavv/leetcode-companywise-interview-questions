@@ -2,41 +2,39 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Columns, Globe, LayoutGrid, Calendar } from "lucide-react";
+import { Code2, Building2, CalendarClock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const features = [
   {
     id: "explore",
-    title: "Global Explore Dashboard",
-    description: "Browse 3,300+ logic modules, sort by difficulty, frequency, and filter by companies. Track your completion with beautiful progress indicators.",
-    icon: Globe,
-    color: "text-blue-500",
-    bg: "bg-blue-500/10",
+    title: "Question bank",
+    description: "Filter questions by difficulty, company, or topic, and check them off as you solve them.",
+    icon: Code2,
     ui: (
-      <div className="w-full h-full bg-white dark:bg-background border border-border/40 rounded-xl overflow-hidden shadow-inner flex flex-col">
-        {/* Fake Search Bar */}
-        <div className="h-12 border-b border-border/50 bg-secondary/30 flex items-center px-4 gap-3">
-          <div className="h-6 w-48 bg-primary/10 rounded-md"></div>
+      <div className="w-full h-full bg-card border border-border rounded-xl overflow-hidden flex flex-col">
+        {/* Mock Toolbar */}
+        <div className="h-11 border-b border-border bg-secondary/50 flex items-center px-4 gap-3">
+          <div className="h-5 w-44 bg-foreground/10 rounded-md"></div>
           <div className="ml-auto flex gap-2">
-            <div className="h-6 w-16 bg-secondary rounded-md"></div>
-            <div className="h-6 w-16 bg-secondary rounded-md"></div>
+            <div className="h-5 w-16 bg-foreground/10 rounded-md"></div>
+            <div className="h-5 w-16 bg-foreground/10 rounded-md"></div>
           </div>
         </div>
-        {/* Fake Stats */}
-        <div className="p-4 grid grid-cols-4 gap-4 bg-background">
-          {[1,2,3,4].map(i => (
-            <div key={i} className="h-16 bg-secondary rounded-lg border border-border/50"></div>
+        {/* Mock Metric Cards */}
+        <div className="p-4 grid grid-cols-4 gap-3 bg-card">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="h-14 bg-secondary rounded-lg border border-border"></div>
           ))}
         </div>
-        {/* Fake List */}
-        <div className="flex-1 p-4 space-y-2 bg-background overflow-hidden relative">
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background to-transparent z-10"></div>
-          {[1,2,3,4,5].map((i) => (
-            <div key={i} className="h-10 bg-secondary/50 rounded-lg flex items-center px-3 border border-border/40">
-               <div className="h-4 w-4 rounded bg-emerald-500/80 mr-3"></div>
-               <div className="h-2 w-32 bg-foreground/20 rounded-full"></div>
-               <div className="ml-auto h-4 w-12 bg-primary/20 rounded-full"></div>
+        {/* Mock Table Rows */}
+        <div className="flex-1 p-4 space-y-2 bg-card overflow-hidden relative">
+          <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-card to-transparent z-10"></div>
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-10 bg-secondary/60 rounded-lg flex items-center px-3 border border-border">
+              <div className="h-4 w-4 rounded bg-signal-easy/70 mr-3"></div>
+              <div className="h-2.5 w-32 bg-foreground/20 rounded-full"></div>
+              <div className="ml-auto h-4 w-14 bg-primary/20 rounded-md"></div>
             </div>
           ))}
         </div>
@@ -45,27 +43,23 @@ const features = [
   },
   {
     id: "companies",
-    title: "Company Analytics Registry",
-    description: "See exactly what firms like Google, Meta, and Amazon are asking right now. Sorted by live query volume.",
-    icon: LayoutGrid,
-    color: "text-emerald-500",
-    bg: "bg-emerald-500/10",
+    title: "Company lists",
+    description: "See what questions Google, Meta, Amazon, and over 680 other companies ask most often in interviews.",
+    icon: Building2,
     ui: (
-      <div className="w-full h-full bg-white dark:bg-background border border-border/40 rounded-xl overflow-hidden shadow-inner flex flex-col p-6 gap-4">
-        <div className="flex justify-between items-end">
-          <div className="space-y-2">
-            <div className="h-8 w-48 bg-primary/20 rounded-lg"></div>
-            <div className="h-3 w-80 bg-foreground/10 rounded-full"></div>
-          </div>
+      <div className="w-full h-full bg-card border border-border rounded-xl overflow-hidden flex flex-col p-5 gap-4">
+        <div className="space-y-2">
+          <div className="h-6 w-40 bg-foreground/15 rounded-md"></div>
+          <div className="h-3 w-64 bg-foreground/10 rounded-full"></div>
         </div>
-        <div className="grid grid-cols-3 gap-4 mt-2">
-          {[1,2,3,4,5,6].map(i => (
-            <div key={i} className="h-32 bg-secondary/30 rounded-xl border border-border/50 flex flex-col p-4 justify-between transition-colors">
-               <div className="flex justify-between">
-                 <div className="h-10 w-10 bg-primary/10 rounded-xl"></div>
-                 <div className="h-4 w-12 bg-emerald-500/20 rounded-full"></div>
-               </div>
-               <div className="h-3 w-24 bg-foreground/30 rounded-full"></div>
+        <div className="grid grid-cols-3 gap-3 mt-1">
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <div key={i} className="h-28 bg-secondary/70 rounded-xl border border-border flex flex-col p-3.5 justify-between">
+              <div className="flex justify-between items-center">
+                <div className="h-8 w-8 bg-foreground/10 rounded-lg"></div>
+                <div className="h-3.5 w-10 bg-signal-easy/20 rounded-md"></div>
+              </div>
+              <div className="h-2.5 w-20 bg-foreground/25 rounded-full"></div>
             </div>
           ))}
         </div>
@@ -74,32 +68,34 @@ const features = [
   },
   {
     id: "planner",
-    title: "Tactical Priority Planner",
-    description: "Your daily focus hub. Set custom queues, track daily completion, and manage your focus sessions with integrated Pomodoro logic.",
-    icon: Calendar,
-    color: "text-rose-500",
-    bg: "bg-rose-500/10",
+    title: "Planner and timer",
+    description: "Schedule questions into your daily plan and use the built-in timer to stay focused during practice.",
+    icon: CalendarClock,
     ui: (
-      <div className="w-full h-full bg-white dark:bg-background border border-border/40 rounded-xl overflow-hidden shadow-inner flex flex-col p-4 gap-4">
-        <div className="h-10 border-b border-border/50 flex items-center justify-between">
-          <div className="h-4 w-32 bg-foreground/20 rounded-full"></div>
-          <div className="flex gap-1">
-            <div className="h-6 w-12 bg-secondary rounded-md"></div>
-            <div className="h-6 w-12 bg-secondary rounded-md"></div>
+      <div className="w-full h-full bg-card border border-border rounded-xl overflow-hidden flex flex-col p-4 gap-3">
+        <div className="h-9 border-b border-border flex items-center justify-between">
+          <div className="h-3.5 w-28 bg-foreground/20 rounded-full"></div>
+          <div className="flex gap-1.5">
+            <div className="h-5 w-12 bg-secondary rounded-md border border-border"></div>
+            <div className="h-5 w-12 bg-secondary rounded-md border border-border"></div>
           </div>
         </div>
-        <div className="flex-1 grid grid-cols-3 gap-4">
-          <div className="col-span-2 space-y-4">
-             <div className="h-48 bg-blue-500/5 dark:bg-blue-500/10 rounded-xl border border-blue-500/10 p-4">
-                <div className="h-3 w-16 bg-blue-500/40 rounded-full mb-4"></div>
-                <div className="space-y-2">
-                  {[1,2,3].map(i => <div key={i} className="h-6 w-full bg-secondary rounded-md"></div>)}
-                </div>
-             </div>
+        <div className="flex-1 grid grid-cols-3 gap-3">
+          <div className="col-span-2 space-y-3">
+            <div className="h-44 bg-secondary/50 rounded-xl border border-border p-3.5 space-y-2.5">
+              <div className="h-3 w-20 bg-primary/40 rounded-full mb-3"></div>
+              {[1, 2, 3].map(i => (
+                <div key={i} className="h-6 w-full bg-card rounded-md border border-border"></div>
+              ))}
+            </div>
           </div>
-          <div className="space-y-4">
-            <div className="h-32 bg-secondary/30 rounded-xl border border-border/50"></div>
-            <div className="h-32 bg-secondary/30 rounded-xl border border-border/50"></div>
+          <div className="space-y-3">
+            <div className="h-28 bg-secondary/50 rounded-xl border border-border flex items-center justify-center">
+              <div className="h-16 w-16 rounded-full border-4 border-primary/30 flex items-center justify-center">
+                <div className="h-2 w-6 bg-foreground/30 rounded-full"></div>
+              </div>
+            </div>
+            <div className="h-14 bg-secondary/50 rounded-xl border border-border"></div>
           </div>
         </div>
       </div>
@@ -118,11 +114,11 @@ export default function FeatureCarousel() {
   }, []);
 
   return (
-    <div className="w-full relative bg-secondary/20 dark:bg-black border border-border/60 rounded-3xl overflow-hidden shadow-2xl p-2 lg:p-6 backdrop-blur-sm">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-[600px] lg:h-[480px]">
+    <div className="w-full apple-card p-4 lg:p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[540px] lg:h-[420px]">
         
-        {/* Navigation / Info Pane */}
-        <div className="lg:col-span-4 flex flex-col justify-center space-y-4">
+        {/* Navigation Pane */}
+        <div className="lg:col-span-4 flex flex-col justify-center space-y-2">
           {features.map((f, i) => {
             const isActive = i === activeIdx;
             const Icon = f.icon;
@@ -131,44 +127,39 @@ export default function FeatureCarousel() {
                 key={f.id}
                 onClick={() => setActiveIdx(i)}
                 className={cn(
-                  "text-left p-4 rounded-2xl transition-all duration-300 group border",
+                  "text-left p-3.5 rounded-xl transition-all duration-150 border cursor-pointer",
                   isActive 
-                    ? "bg-white dark:bg-background border-border/50 shadow-lg shadow-black/5" 
-                    : "border-transparent hover:bg-white/50 dark:hover:bg-white/5"
+                    ? "bg-secondary border-border shadow-xs" 
+                    : "border-transparent hover:bg-secondary/50 text-muted-foreground"
                 )}
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className={cn("p-2 rounded-lg transition-colors", isActive ? f.bg : "bg-black/5 dark:bg-white/5")}>
-                    <Icon className={cn("h-4 w-4", isActive ? f.color : "text-muted-foreground")} />
+                <div className="flex items-center gap-2.5">
+                  <div className={cn("p-1.5 rounded-lg border", isActive ? "bg-card border-border text-primary" : "bg-secondary border-border text-muted-foreground")}>
+                    <Icon className="h-4 w-4" />
                   </div>
-                  <h3 className={cn("font-bold text-sm", isActive ? "text-foreground" : "text-muted-foreground")}>{f.title}</h3>
+                  <h3 className={cn("font-semibold text-sm", isActive ? "text-foreground font-bold" : "text-muted-foreground")}>
+                    {f.title}
+                  </h3>
                 </div>
-                <AnimatePresence>
-                  {isActive && (
-                    <motion.p 
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="text-xs leading-relaxed text-muted-foreground mt-2 overflow-hidden"
-                    >
-                      {f.description}
-                    </motion.p>
-                  )}
-                </AnimatePresence>
+                {isActive && (
+                  <p className="text-xs leading-relaxed text-muted-foreground mt-2.5 pl-8">
+                    {f.description}
+                  </p>
+                )}
               </button>
-            )
+            );
           })}
         </div>
 
         {/* Visual Mock Pane */}
-        <div className="lg:col-span-8 bg-black/5 dark:bg-white/5 rounded-2xl border border-border/50 relative overflow-hidden flex items-center justify-center p-4 lg:p-8">
+        <div className="lg:col-span-8 bg-secondary/50 rounded-xl border border-border relative overflow-hidden flex items-center justify-center p-4 lg:p-6">
           <AnimatePresence mode="popLayout">
             <motion.div
               key={activeIdx}
-              initial={{ y: 20, opacity: 0, scale: 0.95 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: -20, opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
+              initial={{ y: 15, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -15, opacity: 0 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
               className="w-full h-full"
             >
               {features[activeIdx].ui}

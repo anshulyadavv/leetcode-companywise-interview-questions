@@ -2,11 +2,10 @@
 
 import { useState, useEffect, useMemo, useDeferredValue } from "react";
 import { useDataStore } from "@/lib/data-store";
-import { LayoutGrid, Search, ArrowRight, Boxes, Wand2, ChevronDown, Check, Zap, ChevronsUpDown, Globe, ChevronLeft, ChevronRight } from "lucide-react";
+import { LayoutGrid, Search, ArrowRight, Boxes, ChevronDown, Check, Zap, Globe, ChevronLeft, ChevronRight, X } from "lucide-react";
 import Link from "next/link";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { cn } from "@/lib/utils";
-
 
 type CompanySortMode = "volume_desc" | "volume_asc" | "alpha_asc" | "alpha_desc";
 type FilterType = "all" | "trending" | "enterprise";
@@ -19,7 +18,7 @@ export default function CompaniesPage() {
   const [filter, setFilter] = useState<FilterType>("all");
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
 
   useEffect(() => {
     initData();
@@ -66,7 +65,6 @@ export default function CompaniesPage() {
     });
   }, [companies, companyStats, deferredSearch, sortMode, filter]);
 
-  // Reset to page 1 whenever filters change
   useEffect(() => { setPage(1); }, [deferredSearch, filter, sortMode]);
 
   const totalQuestions = questions.length;
@@ -76,87 +74,94 @@ export default function CompaniesPage() {
   const endItem = Math.min(page * itemsPerPage, filteredAndSorted.length);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-10 pt-10 pb-20">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 py-8 pb-20">
       {/* Header */}
-      <header className="space-y-6 pb-10 border-b border-border">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-xl text-primary ring-1 ring-primary/15">
-                <LayoutGrid className="h-4 w-4" />
-              </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-primary/70">
-                Company Database
-              </span>
-            </div>
-            <div className="space-y-2">
-              <h1 className="text-5xl md:text-7xl font-sans font-extrabold tracking-tighter text-foreground leading-[0.95]">
-                All <span className="text-primary">Companies</span>
-              </h1>
-              <p className="text-muted-foreground text-base max-w-lg leading-relaxed">
-                Browse {companies.length} companies and see exactly which questions they ask.
-              </p>
-            </div>
-          </div>
-        </div>
+      <header className="space-y-2 pb-6 border-b border-border">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+          Companies
+        </h1>
+        <p className="text-muted-foreground text-sm sm:text-base max-w-xl leading-relaxed">
+          Browse {companies.length} tech companies with real interview questions and difficulty breakdowns.
+        </p>
       </header>
 
-      {/* Control Bar */}
-      <div className="flex flex-wrap gap-2 items-center bg-white/60 dark:bg-muted/40 backdrop-blur-xl p-1.5 rounded-2xl border border-border shadow-premium">
-        {/* Search */}
-        <div className="relative group w-full md:w-72 shrink-0">
+      {/* Control Bar (Apple Toolbar) */}
+      <div className="flex flex-wrap gap-3 items-center bg-card p-3 rounded-2xl border border-border">
+        {/* Search Input */}
+        <div className="relative group w-full md:w-80 shrink-0">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
           <input
             type="text"
-            placeholder="Search firm registry..."
-            className="w-full h-10 pl-10 pr-4 text-sm font-medium bg-white/70 dark:bg-black/50 border border-border/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all placeholder:text-muted-foreground/50"
+            placeholder="Search companies by name or tag..."
+            className="w-full h-9 pl-9 pr-8 text-sm font-medium bg-secondary/80 focus:bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all placeholder:text-muted-foreground"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-muted-foreground hover:text-foreground rounded-full"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
 
-        <div className="h-6 w-px bg-border/60 hidden lg:block mx-1" />
-
-        {/* Filter Chips */}
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <FilterChip active={filter === "all"} onClick={() => setFilter("all")} label="All" icon={Globe} />
-          <FilterChip active={filter === "trending"} onClick={() => setFilter("trending")} label="Trending" icon={Zap} />
-          <FilterChip active={filter === "enterprise"} onClick={() => setFilter("enterprise")} label="Enterprise" icon={Wand2} />
+        {/* Filter Segmented Control */}
+        <div className="segmented-track">
+          <button
+            onClick={() => setFilter("all")}
+            className={cn("segmented-item", filter === "all" && "segmented-item-active")}
+          >
+            All Companies
+          </button>
+          <button
+            onClick={() => setFilter("trending")}
+            className={cn("segmented-item", filter === "trending" && "segmented-item-active")}
+          >
+            Trending (&gt;40)
+          </button>
+          <button
+            onClick={() => setFilter("enterprise")}
+            className={cn("segmented-item", filter === "enterprise" && "segmented-item-active")}
+          >
+            Enterprise (&gt;100)
+          </button>
         </div>
 
-        {/* Sort — pushed to the right */}
+        {/* Sort Popover */}
         <div className="relative ml-auto">
           <button 
             onClick={() => setShowSortMenu(!showSortMenu)}
-            className="h-10 px-4 flex items-center gap-2 bg-secondary/60 border border-border/40 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-white dark:hover:bg-secondary/40 hover:border-primary/30 transition-all shadow-sm"
+            className="h-9 px-3.5 flex items-center gap-2 bg-secondary/80 hover:bg-secondary border border-border rounded-xl text-xs font-semibold text-foreground transition-all"
           >
-            <ChevronsUpDown className="h-3.5 w-3.5 text-primary" />
-            <span className="truncate max-w-[80px]">
-              {sortMode === "volume_desc" ? "Volume ↓" : sortMode === "volume_asc" ? "Volume ↑" : sortMode === "alpha_asc" ? "A → Z" : "Z → A"}
+            <span className="text-muted-foreground font-normal">Sort:</span>
+            <span>
+              {sortMode === "volume_desc" ? "Most Questions" : sortMode === "volume_asc" ? "Least Questions" : sortMode === "alpha_asc" ? "A to Z" : "Z to A"}
             </span>
-            <ChevronDown className={cn("h-3.5 w-3.5 transition-transform shrink-0", showSortMenu && "rotate-180")} />
+            <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground transition-transform shrink-0", showSortMenu && "rotate-180")} />
           </button>
           
           {showSortMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowSortMenu(false)} />
-              <div className="absolute right-0 top-full mt-2 w-44 bg-white/95 dark:bg-black backdrop-blur-xl rounded-xl shadow-2xl border border-border z-50 p-1.5 ring-1 ring-black/5 dark:ring-white/5">
+              <div className="absolute right-0 top-full mt-1.5 w-48 apple-card shadow-2xl z-50 p-1">
                 {[
-                  { id: "volume_desc", label: "Volume (High → Low)" },
-                  { id: "volume_asc", label: "Volume (Low → High)" },
-                  { id: "alpha_asc", label: "Alphabetical A–Z" },
-                  { id: "alpha_desc", label: "Alphabetical Z–A" }
+                  { id: "volume_desc", label: "Questions: High to Low" },
+                  { id: "volume_asc", label: "Questions: Low to High" },
+                  { id: "alpha_asc", label: "Alphabetical: A → Z" },
+                  { id: "alpha_desc", label: "Alphabetical: Z → A" }
                 ].map((opt) => (
                   <button
                     key={opt.id}
                     onClick={() => { setSortMode(opt.id as CompanySortMode); setShowSortMenu(false); }}
                     className={cn(
-                      "w-full text-left px-3 py-2 text-xs font-semibold transition-all rounded-lg flex items-center justify-between",
-                      sortMode === opt.id ? "bg-primary text-white shadow-md shadow-primary/20" : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                      "w-full text-left px-2.5 py-1.5 text-xs font-medium rounded-lg flex items-center justify-between transition-colors",
+                      sortMode === opt.id ? "bg-primary/10 text-primary font-semibold" : "hover:bg-secondary text-foreground"
                     )}
                   >
-                    {opt.label}
-                    {sortMode === opt.id && <Check className="h-3 w-3 shrink-0" />}
+                    <span>{opt.label}</span>
+                    {sortMode === opt.id && <Check className="h-3.5 w-3.5 text-primary shrink-0" />}
                   </button>
                 ))}
               </div>
@@ -165,25 +170,25 @@ export default function CompaniesPage() {
         </div>
       </div>
 
-      {/* Results info */}
-      <div className="flex items-center justify-between text-sm text-muted-foreground -mt-4">
+      {/* Results Header info */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground font-medium px-1">
         <span>
           {filteredAndSorted.length === 0
-            ? "No firms found"
-            : <>Showing <span className="text-foreground font-semibold">{startItem}–{endItem}</span> of <span className="text-foreground font-semibold">{filteredAndSorted.length}</span> firms</>}
+            ? "No companies found"
+            : <>Showing <span className="text-foreground font-bold font-tabular">{startItem} to {endItem}</span> of <span className="text-foreground font-bold font-tabular">{filteredAndSorted.length}</span> companies</>}
         </span>
         {(deferredSearch || filter !== "all") && (
           <button
             onClick={() => { setSearch(""); setFilter("all"); }}
             className="text-primary hover:underline text-xs font-semibold"
           >
-            Clear filters
+            Reset Filters
           </button>
         )}
       </div>
 
       {/* Company Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {paginated.map((company) => {
           const stats = company.difficulty;
           const percentage = ((company.liveCount / (totalQuestions || 1)) * 100).toPrecision(2);
@@ -192,53 +197,42 @@ export default function CompaniesPage() {
             <Link 
               key={company.slug}
               href={`/company/${company.slug}`} 
-              className="premium-card group relative p-6 flex flex-col justify-between overflow-hidden bg-white dark:bg-black"
+              className="apple-card p-5 flex flex-col justify-between group hover:border-border-hover transition-all"
             >
-              {/* Subtle accent line */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-primary/10 group-hover:bg-primary/30 transition-colors" />
-              
-              <div className="space-y-5 relative z-10">
+              <div className="space-y-4">
                 <div className="flex justify-between items-start">
-                  <div className="h-12 w-12 rounded-xl bg-white dark:bg-secondary/60 border border-border/60 flex items-center justify-center transition-all duration-300 text-muted-foreground overflow-hidden">
+                  <div className="h-11 w-11 rounded-xl bg-secondary border border-border flex items-center justify-center text-muted-foreground overflow-hidden">
                     <CompanyLogo 
                       slug={company.slug} 
                       name={company.displayName} 
-                      className="h-7 w-7 transition-transform group-hover:scale-105"
+                      className="h-6 w-6 transition-transform group-hover:scale-105"
                       fallbackClassName="transition-transform group-hover:scale-105" 
                     />
                   </div>
-                  <div className="flex items-center gap-1.5 text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100/80 text-[10px] font-black tracking-wide">
-                    <Boxes className="h-3 w-3" />
+                  <span className="text-xs font-bold font-tabular text-muted-foreground px-2 py-0.5 rounded-md bg-secondary border border-border">
                     {percentage}%
-                  </div>
+                  </span>
                 </div>
                 
                 <div className="space-y-2">
-                  <h3 className="text-xl font-black tracking-tight text-foreground group-hover:text-primary transition-colors leading-tight">
+                  <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
                     {company.displayName}
                   </h3>
                   <div className="flex flex-wrap gap-1.5">
-                    <DifficultyDot count={stats.Easy} color="bg-emerald-500" label="E" />
-                    <DifficultyDot count={stats.Medium} color="bg-amber-500" label="M" />
-                    <DifficultyDot count={stats.Hard} color="bg-rose-500" label="H" />
+                    <DifficultyDot count={stats.Easy} dotClass="bg-signal-easy" label="Easy" />
+                    <DifficultyDot count={stats.Medium} dotClass="bg-signal-medium" label="Med" />
+                    <DifficultyDot count={stats.Hard} dotClass="bg-signal-hard" label="Hard" />
                   </div>
                 </div>
               </div>
 
-              <div className="pt-5 space-y-3 relative z-10">
-                <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-primary/80 rounded-full transition-all duration-700"
-                    style={{ width: `${Math.min(100, (company.liveCount / 300) * 100)}%` }}
-                  />
-                </div>
-                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors">
-                  <span className="flex items-center gap-1">
-                    Questions 
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
-                  </span>
-                  <span className="font-black text-foreground text-xs group-hover:text-primary transition-colors">{company.liveCount}</span>
-                </div>
+              <div className="pt-4 mt-3 border-t border-border flex items-center justify-between text-xs">
+                <span className="font-semibold font-tabular text-foreground">
+                  {company.liveCount} <span className="font-medium text-muted-foreground">questions</span>
+                </span>
+                <span className="text-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                  View <ArrowRight className="h-3 w-3" />
+                </span>
               </div>
             </Link>
           );
@@ -246,120 +240,77 @@ export default function CompaniesPage() {
       </div>
 
       {filteredAndSorted.length === 0 && (
-        <div className="py-28 text-center rounded-2xl bg-white/60 dark:bg-black/60 border border-border border-dashed flex flex-col items-center gap-4">
-          <Boxes className="h-10 w-10 text-muted-foreground/30" />
+        <div className="py-20 text-center apple-card border-dashed flex flex-col items-center gap-3">
+          <Boxes className="h-8 w-8 text-muted-foreground/30" />
           <div className="space-y-1">
-            <h2 className="text-lg font-semibold">No firms found</h2>
-            <p className="text-muted-foreground text-sm">
-              Try a different search term or clear the active filters.
+            <h2 className="text-sm font-semibold text-foreground">No companies found</h2>
+            <p className="text-muted-foreground text-xs">
+              Try adjusting your search query or reset the filter.
             </p>
           </div>
           <button 
             onClick={() => { setSearch(""); setFilter("all"); }}
-            className="btn-secondary text-sm"
+            className="btn-secondary text-xs mt-2"
           >
-            Clear filters
+            Reset Filters
           </button>
         </div>
       )}
 
       {/* Pagination */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border/50">
-        <div className="flex items-center gap-1 bg-white dark:bg-black p-1 rounded-xl border border-border shadow-sm">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-2">Show</span>
-          {[10, 25, 50, 100].map((size) => (
-            <button
-              key={size}
-              onClick={() => { setItemsPerPage(size); setPage(1); }}
-              className={cn(
-                "px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all uppercase tracking-wider",
-                itemsPerPage === size ? "bg-primary text-white shadow-sm shadow-primary/20" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-              )}
-            >
-              {size}
-            </button>
-          ))}
-        </div>
+      {totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border">
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground mr-1">Page size:</span>
+            <div className="segmented-track">
+              {[12, 24, 48, 96].map((size) => (
+                <button
+                  key={size}
+                  onClick={() => { setItemsPerPage(size); setPage(1); }}
+                  className={cn(
+                    "segmented-item font-tabular",
+                    itemsPerPage === size && "segmented-item-active"
+                  )}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
 
-        {totalPages > 1 && (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-border bg-white dark:bg-black hover:bg-secondary dark:hover:bg-secondary transition-all disabled:opacity-40 disabled:pointer-events-none"
+              className="h-8 px-3 rounded-lg text-xs font-medium border border-border bg-card hover:bg-secondary transition-all disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1"
             >
-              <ChevronLeft className="h-4 w-4" />
-              Previous
+              <ChevronLeft className="h-3.5 w-3.5" /> Previous
             </button>
 
-            <div className="flex items-center gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1)
-                .filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 2)
-                .reduce<(number | "...")[]>((acc, p, idx, arr) => {
-                  if (idx > 0 && typeof arr[idx - 1] === "number" && (p as number) - (arr[idx - 1] as number) > 1) {
-                    acc.push("...");
-                  }
-                  acc.push(p);
-                  return acc;
-                }, [])
-                .map((p, i) =>
-                  p === "..." ? (
-                    <span key={`ellipsis-${i}`} className="px-2 text-sm text-muted-foreground select-none">...</span>
-                  ) : (
-                    <button
-                      key={p}
-                      onClick={() => setPage(p as number)}
-                      className={cn(
-                        "w-9 h-9 rounded-lg text-sm font-semibold transition-all",
-                        page === p
-                          ? "bg-primary text-white shadow-sm shadow-primary/20"
-                          : "hover:bg-secondary text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      {p}
-                    </button>
-                  )
-                )}
-            </div>
+            <span className="text-xs text-muted-foreground font-medium font-tabular">
+              Page <span className="text-foreground font-bold">{page}</span> of {totalPages}
+            </span>
 
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-border bg-white dark:bg-black hover:bg-secondary dark:hover:bg-secondary transition-all disabled:opacity-40 disabled:pointer-events-none"
+              className="h-8 px-3 rounded-lg text-xs font-medium border border-border bg-card hover:bg-secondary transition-all disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1"
             >
-              Next
-              <ChevronRight className="h-4 w-4" />
+              Next <ChevronRight className="h-3.5 w-3.5" />
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function DifficultyDot({ count, color, label }: { count: number, color: string, label: string }) {
+function DifficultyDot({ count, dotClass, label }: { count: number, dotClass: string, label: string }) {
   if (count === 0) return null;
   return (
-    <div className="flex items-center gap-1 px-1.5 py-0.5 bg-secondary/60 rounded-md border border-border/40 group-hover:bg-white dark:group-hover:bg-secondary transition-colors">
-      <div className={cn("h-1.5 w-1.5 rounded-full shrink-0", color)} />
-      <span className="text-[9px] font-black text-muted-foreground">{count}{label}</span>
+    <div className="flex items-center gap-1.5 px-2 py-0.5 bg-secondary rounded-md border border-border text-[11px] font-medium text-muted-foreground">
+      <div className={cn("h-1.5 w-1.5 rounded-full shrink-0", dotClass)} />
+      <span className="font-tabular">{count} {label}</span>
     </div>
-  );
-}
-
-function FilterChip({ active, onClick, label, icon: Icon }: { active: boolean, onClick: () => void, label: string, icon: React.ComponentType<{className?: string}> }) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border active:scale-95 whitespace-nowrap",
-        active 
-          ? "bg-primary text-white border-primary shadow-md shadow-primary/20" 
-          : "bg-white/60 dark:bg-black/60 text-muted-foreground border-border/50 hover:border-primary/40 hover:text-foreground hover:bg-white dark:hover:bg-secondary"
-      )}
-    >
-      <Icon className={cn("h-3 w-3", active ? "text-white" : "text-primary/60")} />
-      {label}
-    </button>
   );
 }

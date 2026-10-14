@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import GlobalPomodoro from "@/components/GlobalPomodoro";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import CommandPalette from "@/components/CommandPalette";
 import { Code } from "lucide-react";
 
 const mono = JetBrains_Mono({ 
@@ -18,8 +19,8 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "CodePractice | Precision Interview Preparation",
-  description: "Industrial-grade interview preparation platform. Curated logic modules, company-specific question banks, and real-time progress tracking for modern engineers.",
+  title: "CodePractice - Company LeetCode Questions & Tracker",
+  description: "Practice interview questions asked by specific companies, track what you solve, and plan your study schedule.",
 };
 
 export default function RootLayout({
@@ -29,14 +30,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning className={`${mono.variable} ${sans.variable} font-sans h-screen overflow-hidden bg-background text-foreground`}>
+      <body suppressHydrationWarning className={`${mono.variable} ${sans.variable} font-sans min-h-screen bg-background text-foreground flex flex-col antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Navbar />
-          <main id="main-scroll-container" className="h-full pt-16 overflow-y-auto scroll-smooth">
+          <main className="flex-1 pt-20 sm:pt-22">
             {children}
-            <Footer />
           </main>
+          <Footer />
           <GlobalPomodoro />
+          <CommandPalette />
         </ThemeProvider>
       </body>
     </html>

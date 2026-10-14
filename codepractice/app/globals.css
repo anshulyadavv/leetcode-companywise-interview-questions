@@ -3,40 +3,65 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --primary: #4f46e5; /* Indigo 600 */
+  --background: #fbfbfd;
+  --foreground: #1d1d1f;
+  --card: #ffffff;
+  --card-foreground: #1d1d1f;
+  --primary: #0071e3;
+  --primary-hover: #0077ed;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #475569;
-  --accent: #4338ca; /* Indigo 700 */
+  --secondary: #f5f5f7;
+  --secondary-foreground: #6e6e73;
+  --accent: #0071e3;
   --accent-foreground: #ffffff;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;
-  --border-hover: #cbd5e1;
+  --muted: #f5f5f7;
+  --muted-foreground: #6e6e73;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.16);
+
+  /* Semantic Signal Colors (Apple Standard) */
+  --signal-easy: #248a3d;
+  --signal-easy-bg: rgba(52, 199, 89, 0.12);
+  --signal-medium: #b25e00;
+  --signal-medium-bg: rgba(255, 149, 0, 0.12);
+  --signal-hard: #d70015;
+  --signal-hard-bg: rgba(255, 59, 48, 0.12);
 }
 
 .dark {
   --background: #000000;
-  --foreground: #f4f4f5;
-  --primary: #6366f1; /* Indigo 500 */
+  --foreground: #f5f5f7;
+  --card: #1c1c1e;
+  --card-foreground: #f5f5f7;
+  --primary: #2997ff;
+  --primary-hover: #47a3ff;
   --primary-foreground: #ffffff;
   --secondary: #1c1c1e;
-  --secondary-foreground: #d4d4d8;
-  --accent: #4f46e5; /* Indigo 600 */
+  --secondary-foreground: #98989d;
+  --accent: #2997ff;
   --accent-foreground: #ffffff;
-  --muted: #242428;
-  --muted-foreground: #a1a1aa;
-  --border: #323236;
-  --border-hover: #48484d;
+  --muted: #2c2c2e;
+  --muted-foreground: #98989d;
+  --border: rgba(255, 255, 255, 0.10);
+  --border-hover: rgba(255, 255, 255, 0.20);
+
+  /* Dark Semantic Signal Colors */
+  --signal-easy: #30d158;
+  --signal-easy-bg: rgba(48, 209, 88, 0.16);
+  --signal-medium: #ff9f0a;
+  --signal-medium-bg: rgba(255, 159, 10, 0.16);
+  --signal-hard: #ff453a;
+  --signal-hard-bg: rgba(255, 69, 58, 0.16);
 }
 
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
   
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
   
   --color-secondary: var(--secondary);
@@ -50,138 +75,129 @@
   
   --color-border: var(--border);
   --color-border-hover: var(--border-hover);
+
+  --color-signal-easy: var(--signal-easy);
+  --color-signal-easy-bg: var(--signal-easy-bg);
+  --color-signal-medium: var(--signal-medium);
+  --color-signal-medium-bg: var(--signal-medium-bg);
+  --color-signal-hard: var(--signal-hard);
+  --color-signal-hard-bg: var(--signal-hard-bg);
   
-  --radius-xl: 20px;
-  --radius-lg: 16px;
-  --radius-md: 12px;
+  --radius-2xl: 20px;
+  --radius-xl: 16px;
+  --radius-lg: 12px;
+  --radius-md: 10px;
   --radius-sm: 8px;
   
   --font-mono: var(--font-mono);
   --font-sans: var(--font-sans);
-  
-  --shadow-premium: 0 4px 12px -2px rgba(0, 0, 0, 0.03), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
-  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
-  --shadow-soft: 0 2px 8px 0 rgba(0, 0, 0, 0.02);
 }
 
 @layer base {
-  html, body {
-    @apply h-screen overflow-hidden;
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    scrollbar-gutter: stable;
   }
 
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    @apply antialiased tracking-tight selection:bg-primary/20 selection:text-primary;
+    min-height: 100vh;
+    @apply antialiased tracking-normal selection:bg-primary/20 selection:text-primary;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
 @layer utilities {
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  
-  .font-heading {
-    font-style: normal;
-    font-weight: 800;
+  .font-tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
   }
 }
 
 @layer components {
-  .premium-card {
-    @apply bg-white dark:bg-[#1c1c1e] border border-border rounded-xl shadow-soft transition-colors duration-200 hover:border-primary/30;
+  /* Apple Pro Content Card */
+  .apple-card {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .glass-effect {
-    @apply bg-white/90 dark:bg-black/80 backdrop-blur-xl border border-white/20 shadow-glass dark:border-white/10;
+  .apple-card:hover {
+    border-color: var(--color-border-hover);
   }
 
-  .tag {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase;
+  /* Liquid Glass (functional floating layer strictly) */
+  .liquid-glass {
+    background-color: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid var(--color-border);
   }
 
-  .btn-premium {
-    @apply bg-primary text-primary-foreground px-6 py-2.5 rounded-lg font-semibold text-sm transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98] flex items-center gap-2 whitespace-nowrap;
+  .dark .liquid-glass {
+    background-color: rgba(28, 28, 30, 0.82);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid var(--color-border);
   }
 
+  /* Apple Buttons */
   .btn-primary {
-    @apply bg-primary text-primary-foreground px-3 py-2.5 rounded-lg font-semibold text-sm transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98] flex items-center gap-2;
+    @apply bg-primary text-primary-foreground px-4 py-2 rounded-xl font-semibold text-sm transition-all hover:bg-primary-hover active:scale-[0.98] flex items-center justify-center gap-2 shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2;
   }
 
   .btn-secondary {
-    @apply bg-white dark:bg-secondary text-foreground border border-border px-6 py-2.5 rounded-lg font-semibold text-sm transition-all hover:bg-secondary dark:hover:bg-muted active:scale-[0.98] flex items-center gap-2;
+    @apply bg-secondary hover:bg-secondary/80 text-foreground border border-border px-4 py-2 rounded-xl font-semibold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2;
   }
 
-  .input-modern {
-    @apply w-full bg-white dark:bg-secondary border border-border rounded-lg px-4 py-2.5 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary;
+  /* Segmented Control Track */
+  .segmented-track {
+    @apply inline-flex items-center p-1 bg-secondary rounded-xl border border-border;
   }
 
-  .page-header-badge {
-    @apply inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded-full uppercase tracking-wider border border-primary/10;
+  .segmented-item {
+    @apply px-3 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer select-none text-muted-foreground hover:text-foreground;
   }
 
-  .section-icon-wrap {
-    @apply p-2 rounded-lg bg-primary/10 text-primary flex items-center justify-center;
+  .segmented-item-active {
+    @apply bg-white dark:bg-[#2c2c2e] text-foreground shadow-xs font-bold;
   }
 
-  @keyframes checkbox-pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.18); }
+  /* Form Input */
+  .input-apple {
+    @apply w-full bg-secondary/80 focus:bg-white dark:focus:bg-[#1c1c1e] text-foreground border border-border rounded-xl px-3.5 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary placeholder:text-muted-foreground;
+  }
+
+  /* Animations */
+  @keyframes checkbox-spring {
+    0% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
     100% { transform: scale(1); }
   }
 
-  .animate-checkbox {
-    animation: checkbox-pop 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  @keyframes fade-up {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .animate-fade-up {
-    animation: fade-up 0.4s ease-out both;
-  }
-
-  @keyframes scribble-draw {
-    from { stroke-dashoffset: 1; }
-    to   { stroke-dashoffset: 0; }
-  }
-
-  .animate-scribble {
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-    animation: scribble-draw 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  .animate-spring-check {
+    animation: checkbox-spring 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
+/* Subtle, standard scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
+  background: rgba(142, 142, 147, 0.35);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-/* Mesh Gradient Background - Muted for focus */
-.mesh-gradient {
-  background-color: var(--color-background);
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.03) 0, transparent 40%), 
-    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.02) 0, transparent 40%);
-}
-
-/* Control Bar unified style */
-.control-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  background: var(--color-background);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  padding: 6px;
-  border-radius: 20px;
-  border: 1px solid var(--color-border);
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(142, 142, 147, 0.6);
 }

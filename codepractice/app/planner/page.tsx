@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import type { KeyboardEvent } from "react";
-import { useDataStore } from "@/lib/data-store";
-import { ChevronLeft, ChevronRight, Calendar, X, Circle, CheckCircle2, Clock, Menu, Grid } from "lucide-react";
+import { useDataStore, GridBlock, GridBlockType } from "@/lib/data-store";
+import { ChevronLeft, ChevronRight, Calendar, X, Circle, CheckCircle2, Clock, Menu, Grid, Plus, Trash2, GripHorizontal } from "lucide-react";
+import { ResponsiveGridLayout, useContainerWidth, Layout } from "react-grid-layout";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
+import NotionBlock from "@/components/NotionBlock";
 import { cn } from "@/lib/utils";
 import { PomodoroWidget } from "@/components/GlobalPomodoro";
 
@@ -22,14 +26,14 @@ function ScribbleLine({ active }: { active: boolean }) {
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
-        className="animate-scribble"
+        className="hidden"
       />
     </svg>
   );
 }
 
 // ── Types ──────────────────────────────────────────────────────────────────
-type View = "day" | "week" | "month" | "quarter" | "year";
+type View = "day" | "week" | "month" | "quarter" | "year" | "dashboard";
 
 // ── Date helpers ───────────────────────────────────────────────────────────
 const ML = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -262,7 +266,7 @@ function YearPicker({ cursor, onSelect }: { cursor: Date; onSelect: (y: number) 
   return (
     <div className="w-[210px] select-none p-2.5">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[13px] font-semibold">{rs} – {rs+7}</span>
+        <span className="text-[13px] font-semibold">{rs} to {rs+7}</span>
         <div className="flex gap-0.5">
           <button onClick={() => setRs(r=>r-8)} className="p-1 rounded hover:bg-secondary"><ChevronLeft className="h-3.5 w-3.5 text-muted-foreground"/></button>
           <button onClick={() => setRs(r=>r+8)} className="p-1 rounded hover:bg-secondary"><ChevronRight className="h-3.5 w-3.5 text-muted-foreground"/></button>
@@ -333,7 +337,7 @@ export default function PlannerPage() {
     }
     if (view==="week") {
       const ms = weekStart(cursor); const me = addDays(ms,6);
-      return `This week: ${MS[ms.getMonth()]} ${ms.getDate()} – ${MS[me.getMonth()]} ${me.getDate()}`;
+      return `This week: ${MS[ms.getMonth()]} ${ms.getDate()} to ${MS[me.getMonth()]} ${me.getDate()}`;
     }
     if (view==="month")   return `${ML[cursor.getMonth()]} ${cursor.getFullYear()}`;
     if (view==="quarter") return `Q${getQ(cursor)} ${cursor.getFullYear()}`;
@@ -342,7 +346,7 @@ export default function PlannerPage() {
 
   const views: {id: View; label: string}[] = [
     {id:"day",label:"Day"},{id:"week",label:"Week"},{id:"month",label:"Month"},
-    {id:"quarter",label:"Quarter"},{id:"year",label:"Year"},
+    {id:"quarter",label:"Quarter"},{id:"year",label:"Year"}, {id:"dashboard",label:"Dashboard"}
   ];
 
   // When view changes, close picker + hide pomodoro panel if shown
@@ -354,7 +358,7 @@ export default function PlannerPage() {
   }, [pomodoro.isDocked]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] overflow-hidden bg-[#f7f7f8] dark:bg-background">
+    <div className="flex flex-col h-[calc(100vh-5.5rem)] overflow-hidden bg-[#f7f7f8] dark:bg-background">
       {/* Sub-header */}
       <div className="flex items-center justify-between px-4 py-2 bg-white dark:bg-[#111113] border-b border-border/60 shrink-0 gap-2">
         {/* Date Navigator */}
@@ -463,12 +467,13 @@ export default function PlannerPage() {
 
 
       {/* View content */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden min-w-0">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 flex flex-col">
         {view==="day"     && <DayView     cursor={cursor} />}
         {view==="week"    && <WeekView    cursor={cursor} cardSize={cardSize} />}
         {view==="month"   && <MonthView   cursor={cursor} />}
         {view==="quarter" && <QuarterView cursor={cursor} />}
         {view==="year"    && <YearView    cursor={cursor} />}
+        {view==="dashboard" && <DashboardView cursor={cursor} />}
       </div>
     </div>
   );
@@ -498,7 +503,7 @@ function TaskList({ date }: { date: string }) {
           </button>
           <span className={cn(
             "relative flex-1 text-sm leading-snug min-w-0 break-words",
-            t.completed && "text-muted-foreground/60"
+            t.completed && "text-muted-foreground/60 line-through decoration-muted-foreground/40"
           )}>
             {t.title}
             <ScribbleLine active={t.completed} />
@@ -721,6 +726,143 @@ function YearView({ cursor }: { cursor: Date }) {
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DASHBOARD VIEW
+// ═══════════════════════════════════════════════════════════════════════════
+function DashboardView({ cursor }: { cursor: Date }) {
+  const { plannerLayouts, setPlannerLayout, updateBlockData } = useDataStore();
+  const dateKey = fmtDate(cursor);
+  const currentBlocks = useMemo(() => plannerLayouts[dateKey] || [], [plannerLayouts, dateKey]);
+  const [contextMenu, setContextMenu] = useState<{x: number, y: number} | null>(null);
+  
+  const { width, containerRef } = useContainerWidth();
+
+  const onLayoutChange = (layout: readonly any[]) => {
+    const newBlocks = layout.map(l => {
+      const existing = currentBlocks.find(b => b.i === l.i);
+      return {
+        ...(existing || { type: 'rich-text' as GridBlockType }),
+        i: l.i, x: l.x, y: l.y, w: l.w, h: l.h
+      } as GridBlock;
+    });
+    setPlannerLayout(dateKey, newBlocks);
+  };
+
+  const removeBlock = (id: string) => {
+    setPlannerLayout(dateKey, currentBlocks.filter(b => b.i !== id));
+  };
+
+  const handleAdd = (type: GridBlockType) => {
+    const newBlock: GridBlock = {
+      i: Math.random().toString(36).substr(2, 9),
+      x: 0, y: Infinity,
+      w: type === 'pomodoro' ? 4 : 6,
+      h: type === 'pomodoro' ? 4 : 6,
+      type
+    };
+    setPlannerLayout(dateKey, [...currentBlocks, newBlock]);
+    setContextMenu(null);
+  };
+
+  useEffect(() => {
+    const handleEvent = (e: Event) => {
+      const type = (e as CustomEvent).detail as GridBlockType;
+      handleAdd(type);
+    };
+    window.addEventListener('add-dashboard-block', handleEvent);
+    return () => window.removeEventListener('add-dashboard-block', handleEvent);
+  }, [dateKey, currentBlocks, setPlannerLayout]);
+
+  useEffect(() => {
+    const closeMenu = () => setContextMenu(null);
+    document.addEventListener("click", closeMenu);
+    return () => document.removeEventListener("click", closeMenu);
+  }, []);
+
+  return (
+    <div 
+      className="flex flex-col flex-1 h-full relative"
+      onContextMenu={(e) => {
+        e.preventDefault();
+        const rect = e.currentTarget.getBoundingClientRect();
+        setContextMenu({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+      }}
+    >
+      {contextMenu && (
+        <div 
+          className="absolute z-50 bg-white dark:bg-[#1c1c1e] rounded-xl shadow-xl border border-border/40 p-1 flex flex-col w-40 animate-in fade-in zoom-in-95 duration-100"
+          style={{ top: contextMenu.y, left: contextMenu.x }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 border-b border-border/40 mb-1">Add Block</div>
+          <button onClick={() => handleAdd('rich-text')} className="w-full text-left px-3 py-2 text-sm hover:bg-secondary rounded-lg transition-colors">Rich Text</button>
+          <button onClick={() => handleAdd('task-list')} className="w-full text-left px-3 py-2 text-sm hover:bg-secondary rounded-lg transition-colors">Task List</button>
+          <button onClick={() => handleAdd('pomodoro')} className="w-full text-left px-3 py-2 text-sm hover:bg-secondary rounded-lg transition-colors">Pomodoro</button>
+        </div>
+      )}
+      <div ref={containerRef} className="flex-1 w-full h-[800px] overflow-y-auto p-4 pt-4">
+        {currentBlocks.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-muted-foreground pb-20 pointer-events-none">
+            <div className="p-4 rounded-full bg-secondary mb-4 shadow-[0_1px_2px_rgba(0,0,0,0.02),0_4px_16px_rgba(0,0,0,0.03)] border border-black/5 dark:border-white/5">
+              <Plus className="h-8 w-8 text-muted-foreground/50" />
+            </div>
+            <p className="font-medium">This dashboard is empty.</p>
+            <p className="text-sm opacity-60">Right-click anywhere to add a block.</p>
+          </div>
+        ) : (
+          <ResponsiveGridLayout
+            width={width}
+            className="layout"
+            layouts={{ lg: currentBlocks }}
+            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+            cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+            rowHeight={30}
+            margin={[16, 16]}
+            dragConfig={{ handle: ".drag-handle" }}
+            onLayoutChange={onLayoutChange}
+          >
+            {currentBlocks.map(block => (
+              <div key={block.i} className="group flex flex-col bg-white dark:bg-[#1c1c1e] rounded-xl border border-black/5 dark:border-white/5 shadow-[0_1px_2px_rgba(0,0,0,0.02),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden relative transition-all duration-300">
+                <div className="drag-handle h-7 flex items-center justify-between px-2 bg-secondary/30 border-b border-border/40 cursor-grab active:cursor-grabbing shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-1.5 text-muted-foreground/70">
+                    <GripHorizontal className="h-3.5 w-3.5" />
+                    <span className="text-[9px] font-bold uppercase tracking-widest">{block.type.replace('-', ' ')}</span>
+                  </div>
+                  <button onClick={() => removeBlock(block.i)} className="p-0.5 rounded hover:bg-rose-500 hover:text-white text-muted-foreground transition-colors">
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                </div>
+                <div className="flex-1 overflow-hidden relative p-0 m-0">
+                  {block.type === 'rich-text' && (
+                    <NotionBlock 
+                      initialContent={block.data?.content} 
+                      onChange={(doc) => updateBlockData(dateKey, block.i, { content: JSON.stringify(doc) })} 
+                    />
+                  )}
+                  {block.type === 'pomodoro' && (
+                    <div className="flex items-center justify-center h-full w-full">
+                      <PomodoroWidget isFloating={false} />
+                    </div>
+                  )}
+                  {block.type === 'task-list' && (
+                    <div className="p-4 h-full flex flex-col gap-2">
+                      <p className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-widest">Daily Tasks</p>
+                      <div className="flex-1 overflow-y-auto -mx-2 px-2">
+                        <TaskList date={dateKey} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </ResponsiveGridLayout>
+        )}
       </div>
     </div>
   );

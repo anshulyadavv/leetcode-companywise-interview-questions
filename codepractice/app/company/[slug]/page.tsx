@@ -1,4 +1,4 @@
-import { LayoutGrid, ArrowLeft, Layers } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Dashboard from "@/components/Dashboard";
 import { CompanyLogo } from "@/components/CompanyLogo";
@@ -23,66 +23,58 @@ export default async function CompanyPage({ params }: { params: Promise<{ slug: 
 
   if (!company) return (
     <div className="min-h-[60vh] flex items-center justify-center p-6">
-      <div className="premium-card p-12 text-center space-y-6 max-w-md w-full">
-        <div className="p-4 bg-rose-50 rounded-2xl w-fit mx-auto">
-          <LayoutGrid className="h-8 w-8 text-rose-500" />
-        </div>
-        <div className="space-y-2">
-          <h2 className="text-2xl font-bold tracking-tight">Company Not Found</h2>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            Firm identifier <span className="text-foreground font-mono font-bold tracking-wider bg-secondary px-1.5 py-0.5 rounded">{slug}</span> was not found in the registry.
-          </p>
-        </div>
-        <Link href="/companies" className="btn-premium justify-center w-full">
-          Return to Directory
+      <div className="apple-card p-10 text-center space-y-5 max-w-md w-full">
+        <h2 className="text-xl font-bold tracking-tight text-foreground">Company Not Found</h2>
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          We could not find a company matching <span className="text-foreground font-mono font-semibold bg-secondary px-1.5 py-0.5 rounded border border-border">{slug}</span>.
+        </p>
+        <Link href="/companies" className="btn-primary justify-center w-full">
+          Return to Companies
         </Link>
       </div>
     </div>
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-10 pt-10 pb-20">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 py-8 pb-20">
       {/* Header */}
-      <header className="space-y-5 pb-10 border-b border-border">
+      <header className="space-y-4 pb-6 border-b border-border">
         <Link 
           href="/companies" 
-          className="inline-flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors group"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors group"
         >
           <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          Back to Company Directory
+          <span>All Companies</span>
         </Link>
 
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-2">
-            <h1 className="text-5xl md:text-6xl font-sans font-extrabold tracking-tighter text-foreground leading-none">
-              {company.displayName} <span className="text-primary">Problems</span>
-            </h1>
-            <p className="text-muted-foreground text-base max-w-xl leading-relaxed">
-              All logic modules tagged for {company.displayName} — sorted by frequency and weighted by difficulty.
-            </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="h-12 w-12 rounded-xl bg-secondary border border-border flex items-center justify-center overflow-hidden shrink-0">
+              <CompanyLogo 
+                slug={company.slug} 
+                name={company.displayName} 
+                className="h-7 w-7"
+                fallbackClassName="h-6 w-6 text-foreground" 
+              />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                {company.displayName}
+              </h1>
+              <p className="text-muted-foreground text-xs sm:text-sm">
+                Questions frequently asked in {company.displayName} technical interviews.
+              </p>
+            </div>
           </div>
           
-          <div className="flex items-center gap-4 text-xs font-semibold text-muted-foreground bg-white/70 dark:bg-black/50 backdrop-blur-md px-5 py-2.5 rounded-full border border-border/50 shrink-0 self-start md:self-auto">
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded-sm bg-white dark:bg-secondary flex items-center justify-center overflow-hidden">
-                <CompanyLogo 
-                  slug={company.slug} 
-                  name={company.displayName} 
-                  className="h-3.5 w-3.5"
-                  fallbackClassName="h-3 w-3 text-primary" 
-                />
-              </div>
-              <span className="font-mono font-bold uppercase tracking-wider text-primary/70">{company.slug}</span>
-            </div>
-            <span className="h-4 w-px bg-border" />
-            <div className="flex items-center gap-2">
-              <Layers className="h-3.5 w-3.5 text-emerald-500" />
-              <span className="text-emerald-600 font-bold">Active</span>
-            </div>
+          <div className="flex items-center gap-2 self-start sm:self-auto px-3 py-1 bg-secondary rounded-lg border border-border text-xs font-mono text-muted-foreground">
+            <span>ID:</span>
+            <span className="font-semibold text-foreground uppercase">{company.slug}</span>
           </div>
         </div>
       </header>
 
+      {/* Main Questions View */}
       <section>
         <Dashboard initialCompany={slug} />
       </section>
