@@ -14,8 +14,6 @@ export default function Footer() {
         <div className="flex items-center gap-2 text-muted-foreground">
           <Code className="h-3.5 w-3.5" />
           <span className="text-xs font-medium">CodePractice</span>
-          <span className="text-xs text-muted-foreground/40">·</span>
-          <span className="text-xs text-muted-foreground/70">LeetCode interview questions by company</span>
         </div>
         <a
           href="https://github.com/anshulyadavv/leetcode-companywise-interview-questions"
@@ -24,7 +22,7 @@ export default function Footer() {
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group"
           aria-label="GitHub"
         >
-          <span className="text-xs font-medium">Built by Anshul</span>
+          <span className="text-xs font-medium">Built with ☕ by Anshul</span>
         </a>
       </div>
     </footer>

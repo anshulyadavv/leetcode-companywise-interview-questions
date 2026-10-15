@@ -5,14 +5,15 @@ import { useDataStore, Question } from "@/lib/data-store";
 import { Search, Plus, ExternalLink, ChevronDown, Check, AlertTriangle, Boxes, ChevronLeft, ChevronRight, CheckCircle2, Calendar, X } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { ContributionHeatmap } from "@/components/Tracker";
 
 type SortKey = "id" | "title" | "difficulty" | "acceptance" | "frequency";
 type SortOrder = "asc" | "desc" | null;
 
 const DIFFICULTY_ORDER = { "Easy": 1, "Medium": 2, "Hard": 3 };
 
-export default function Dashboard({ initialCompany }: { initialCompany?: string }) {
-  const { questions, initData, addToList, addPlannerTask, todoLists, completedQuestions, toggleQuestionCompletion } = useDataStore();
+export default function Dashboard({ initialCompany, showHeatmap }: { initialCompany?: string; showHeatmap?: boolean }) {
+  const { questions, initData, addToList, addPlannerTask, todoLists, completedQuestions, toggleQuestionCompletion, completionDates } = useDataStore();
   const [search, setSearch] = useState("");
   const deferredSearch = useDeferredValue(search);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string[]>([]);
@@ -50,6 +51,18 @@ export default function Dashboard({ initialCompany }: { initialCompany?: string 
       hard: { total: hard.length, done: hard.filter(q => completedQuestions.includes(q.slug)).length },
     };
   }, [questions, completedQuestions, initialCompany]);
+
+  const heatmapDates = useMemo(() => {
+    const dates: Date[] = [];
+    const allItems = todoLists.flatMap(l => l.items);
+    allItems.forEach(i => {
+      if (i.completed && i.completedAt) dates.push(new Date(i.completedAt));
+    });
+    Object.values(completionDates || {}).forEach(iso => {
+      if (iso) dates.push(new Date(iso));
+    });
+    return dates;
+  }, [todoLists, completionDates]);
 
   const topics = useMemo(() => {
     const allTopics = new Set(questions.flatMap(q => q.topics));
@@ -113,33 +126,89 @@ export default function Dashboard({ initialCompany }: { initialCompany?: string 
 
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard 
-          label="Progress" 
-          done={stats.done} 
-          total={stats.total} 
-          signal="primary"
-        />
-        <StatCard 
-          label="Easy" 
-          done={stats.easy.done} 
-          total={stats.easy.total} 
-          signal="easy"
-        />
-        <StatCard 
-          label="Medium" 
-          done={stats.medium.done} 
-          total={stats.medium.total} 
-          signal="medium"
-        />
-        <StatCard 
-          label="Hard" 
-          done={stats.hard.done} 
-          total={stats.hard.total} 
-          signal="hard"
-        />
-      </div>
+      {/* Stats Cards & Activity Heatmap */}
+      {showHeatmap ? (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+          {/* Activity Heatmap */}
+          <div className="lg:col-span-7 xl:col-span-8 flex flex-col">
+            <div className="apple-card p-5 sm:p-6 flex flex-col justify-between h-full">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold tracking-tight text-foreground">
+                  Activity graph
+                </h3>
+                <div className="flex gap-1.5 items-center">
+                  <span className="text-xs font-medium text-muted-foreground mr-1">Intensity</span>
+                  {[0.12, 0.35, 0.6, 0.85, 1].map(opacity => (
+                    <div 
+                      key={opacity} 
+                      className="h-3 w-3 rounded-[3px] bg-primary" 
+                      style={{ opacity }} 
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="overflow-x-auto pb-1">
+                <ContributionHeatmap dates={heatmapDates} />
+              </div>
+            </div>
+          </div>
+
+          {/* Question list tracker cards alongside */}
+          <div className="lg:col-span-5 xl:col-span-4 grid grid-cols-2 gap-3 sm:gap-3.5 content-between">
+            <StatCard 
+              label="Progress" 
+              done={stats.done} 
+              total={stats.total} 
+              signal="primary"
+            />
+            <StatCard 
+              label="Easy" 
+              done={stats.easy.done} 
+              total={stats.easy.total} 
+              signal="easy"
+            />
+            <StatCard 
+              label="Medium" 
+              done={stats.medium.done} 
+              total={stats.medium.total} 
+              signal="medium"
+            />
+            <StatCard 
+              label="Hard" 
+              done={stats.hard.done} 
+              total={stats.hard.total} 
+              signal="hard"
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <StatCard 
+            label="Progress" 
+            done={stats.done} 
+            total={stats.total} 
+            signal="primary"
+          />
+          <StatCard 
+            label="Easy" 
+            done={stats.easy.done} 
+            total={stats.easy.total} 
+            signal="easy"
+          />
+          <StatCard 
+            label="Medium" 
+            done={stats.medium.done} 
+            total={stats.medium.total} 
+            signal="medium"
+          />
+          <StatCard 
+            label="Hard" 
+            done={stats.hard.done} 
+            total={stats.hard.total} 
+            signal="hard"
+          />
+        </div>
+      )}
 
       {/* Control Bar (Apple Toolbar) */}
       <div className="flex flex-wrap gap-3 items-center bg-card p-3 rounded-2xl border border-border">
@@ -605,8 +674,8 @@ function StatCard({
   };
 
   return (
-    <div className="apple-card p-5">
-      <div className="flex items-center justify-between mb-3">
+    <div className="apple-card p-4 sm:p-5 flex flex-col justify-between">
+      <div className="flex items-center justify-between mb-2 sm:mb-3">
         <div className="flex items-center gap-2">
           <span className={cn("h-2 w-2 rounded-full", barColors[signal])} />
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">

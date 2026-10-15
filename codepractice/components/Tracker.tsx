@@ -176,7 +176,7 @@ function DifficultyBar({
   );
 }
 
-function ContributionHeatmap({ dates }: { dates: Date[] }) {
+export function ContributionHeatmap({ dates }: { dates: Date[] }) {
   const weeks = useMemo(() => {
     const dateCounts = new Map<string, number>();
     dates.forEach(d => {
